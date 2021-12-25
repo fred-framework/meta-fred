@@ -10,7 +10,9 @@ S = "${WORKDIR}/git"
 
 inherit cmake
 
-EXTRA_OECMAKE = ""
+EXTRA_OECMAKE = "-DCMAKE_INSTALL_PREFIX=/opt/fredsys"
 
 DEPENDS = "fred-lib"
 RDEPENDS_${PN} = "fred-lib"
+
+FILES_${PN} = "/opt/fredsys/examples/fred-test-cli"
