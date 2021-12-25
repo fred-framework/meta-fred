@@ -1,13 +1,16 @@
-DESCRIPTION = "Example Hello World application for Yocto build Using git and Cmake."
-SECTION = "examples"
-LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=3d7054b26bdd0f2f5fc6b2e53f28783d"
+DESCRIPTION = "FRED tutorial example"
+SECTION = "fred"
+LICENSE = "GPL-3.0"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=1ebbd3e34237af26da5dc08a4e440464"
 
-SRCREV = "47f73c318bb726bb2a5cf8e4d58204ba5fe3d207"
-SRC_URI = "git://github.com/amamory-embedded/Hello-World-Cmake.git/;branch=main"
+SRCREV = "6358a00482cec5fbaf68b29b68c4f84193906da6"
+SRC_URI = "git://github.com/SSSA-ampere/fred-linux-example.git/;branch=main"
 
 S = "${WORKDIR}/git"
 
 inherit cmake
 
 EXTRA_OECMAKE = ""
+
+DEPENDS = "fred-lib"
+RDEPENDS_${PN} = "fred-lib"
