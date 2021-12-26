@@ -15,10 +15,14 @@ SRC_URI = " \
 
 S = "${WORKDIR}/git"
 
-#RPROVIDES_${PN} += "fpga-mgr-zynqmp-drv"
 RPROVIDES_${PN} += "fred-buffctl"  
 
 do_compile (){
+    cd fred_buffctl
+    oe_runmake
+}
+
+do_install (){
     cd fred_buffctl
     oe_runmake
 }
