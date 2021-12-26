@@ -3,7 +3,7 @@ SECTION = "fred"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1ebbd3e34237af26da5dc08a4e440464"
 
-SRCREV = "00425bde86b3be53e237b5e04f1c92477f1937aa"
+SRCREV = "76f71bc0c2e22d1f2d45bc24dee9edc52c9d698f"
 SRC_URI = "git://github.com/SSSA-ampere/fred-linux-client-lib.git;branch=master"
 
 S = "${WORKDIR}/git"
