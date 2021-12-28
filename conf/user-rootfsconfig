@@ -1,0 +1,11 @@
+#Note: Mention Each package in individual line
+#These packages will get added into rootfs menu entry
+
+# FRED related libs and apps
+CONFIG_fred-lib
+CONFIG_fred-tutorial
+CONFIG_fred-server
+
+# FRED kernel modules
+#MACHINE_EXTRA_RDEPENDS += "fred-buffctl"
+#MACHINE_EXTRA_RDEPENDS += "kernel-module-fpga_mgr_zynqmp_drv"
