@@ -28,7 +28,7 @@ In fact, 2020.1 is the oldest supported version of petalinux. The recipe `recipe
 ## Supported FPGA platforms 
 
 FRED is tested in zynq and zynqmp devices, namely zcu102-zynqmp, pynq-z1, and Ultra96-zynqmp. 
-Petalinux/Yocto has a variable called `MACHINE` that specifies the target hardware. This variable is automatically set when we assign a XSA or BSP file to a petalinux project. One can check the list of Xilinx machines in the directory `./components/yocto/layers/meta-xilinx/meta-xilinx-bsp/conf/machine/` under a petalinux project.
+Petalinux/Yocto has a variable called `MACHINE` that specifies the target hardware. This variable is automatically set when we assign a XSA or BSP file to a petalinux project. One can check the list of Xilinx machines in the directory `./components/yocto/layers/meta-xilinx/meta-xilinx-bsp/conf/machine/` under a petalinux project. In the petalinux flow, `MACHINE` can be viewed in  *petalinux-config --> Yocto settings --> () MACHINE NAME.*
 
 ## Building a Standard petalinux Project for a Zynq device
 
@@ -163,45 +163,42 @@ fred-tutorial:
   meta-fred            1.0
 ```
 
+**TODO**: a zynq device should show `fpga-mgr-zynq-drv` when running `grep -i mgr recipes.txt`. 
+
+
 ```
 $ bitbake -e fred-lib | grep ^WORKDIR=
 WORKDIR="/<basedir>/xilinx-zcu102-2020.2/build/tmp/work/aarch64-xilinx-linux/fred-lib/1.0-r0"
 ```
 
+
+% cat build/tmp/deploy/licenses/petalinux-image-minimal-zynq-generic-20211228154035/package.manifest  | grep fred
+fed-lib
+fred-lib-dev
+fred-lib-lic
+fred-server
+fred-server-lic
+fred-tutorial
+fred-tutorial-lic
+
 ## Running the Custom Apps with QEMU
 
 TO BE DONE !
+https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/821395464/QEMU+User+Documentation
+https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/862421112/Co-simulation
+
+petalinux-boot --qemu --prebuilt 3
+
+petalinux-boot --qemu --image ./images/linux/zImage
+
+To quit the emulation, press CTRL+A followed by X.
 
 ## Running the Custom Apps in the FPGA
 
-After building the image for qemu, we are going to see two different images in the following directory:
 
-```bash
-~/rpi/build$ ls /mnt/yocto/tmp/deploy/images/
-qemux86-64  raspberrypi3
-```
+petalinux-package --boot --format BIN --fsbl images/linux/zynq_fsbl.elf --kernel images/linux/image.ub --u-boot images/linux/u-boot.elf --fpga images/linux/<NAME_OF_BITSREAM>.bit
 
-For actual deployment on a RPI3 processor, we need to change the `MACHINE` variable in `~/rpi/build/conf/local.conf` back to its original, `raspberrypi3` or `raspberrypi3-64`.
-For example:
 
-```bash
-# This sets the default machine to be qemux86-64 if no other machine is selected:
-MACHINE ??= "raspberrypi3"
-```
-
-It's also recommended to change the output format of the image by adding the following line of the same file:
-
-```bash
-IMAGE_FSTYPES ?= "tar.bz2 ext3 rpi-sdimg"
-```
-
-After building the image again (this time, it's quick), you will find the following file:
-
-```bash
-~/rpi/build$ find /mnt/yocto/tmp/deploy/images/raspberrypi3/ -name *.rpi-sdimg
-/mnt/yocto/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3-20211221153332.rootfs.rpi-sdimg
-/mnt/yocto/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3.rpi-sdimg
-```
 
 Remember that the `/mnt/yocto/tmp` is shared between the docker image and the host, so it's easy to burn the image file into an SD card.
 
@@ -216,19 +213,23 @@ Check out more information on these links:
  - https://george-calin.medium.com/how-to-prepare-a-helloworld-c-recipe-with-yocto-project-1f74c296a777
  - https://tutorialadda.com/yocto/create-your-own-linux-image-for-the-raspberry-pi-board-using-yocto-project
 
-## To Learn More
-
- - [Yocto Project Mega-Manual (v3.1 dunfell)](https://www.yoctoproject.org/docs/3.1/mega-manual/mega-manual.html);
- - [Books about Yocto](https://www.yoctoproject.org/learn/books/);
- - [Ready, Set, Yocto!](https://github.com/jynik/ready-set-yocto);
- - https://git.yoctoproject.org/poky/tree/meta-skeleton.
 
 ## TO DO
 
  - [ ] build the correct kernel module based on the FPGA model , e.g. `zynq` or `zynqmp`;
  - [ ] include the device tree from DART;
  - [ ] make a [cmake module](https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Find-Libraries) for `fred-lib`;
+ - [ ] Use [SystemC cosim](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/862421112/Co-simulation) for testing FRED;
+ - [ ] write a [QEMU device model](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/861569267/QEMU+Device+Model+Development) for testing FRED;
 
 ## Contributions
 
   Did you find a bug in this tutorial ? Do you have some extensions or updates to add ? Please send me a Pull Request.
+
+## Authors
+
+ - Alexandre Amory (April 2021), ReTiS Lab, Scuola Sant'Anna, Pisa, Italy.
+
+## Funding
+ 
+This software package has been developed in the context of the [AMPERE project](https://ampere-euproject.eu/). This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 871669.
