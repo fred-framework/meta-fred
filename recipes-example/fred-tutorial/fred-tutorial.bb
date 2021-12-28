@@ -1,11 +1,11 @@
 DESCRIPTION = "FRED tutorial example"
+HOMEPAGE = "http://fred.santannapisa.it/"
 SECTION = "fred"
 LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=1ebbd3e34237af26da5dc08a4e440464"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=ac7257191405188e515dbd8d599826c6"
 
-SRCREV = "b21c570a71c9f649b1e46948cd0dc5d869f7ff67"
+SRCREV = "39c1978a82c27fbd4dd2b9de67f8e4070767b231"
 SRC_URI = "git://github.com/SSSA-ampere/fred-linux-example.git/;branch=main"
-
 S = "${WORKDIR}/git"
 
 inherit cmake

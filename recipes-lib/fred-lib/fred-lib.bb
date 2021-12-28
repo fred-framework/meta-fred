@@ -1,11 +1,11 @@
 DESCRIPTION = "FRED library required by the FRED apps."
+HOMEPAGE = "http://fred.santannapisa.it/"
 SECTION = "fred"
 LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=1ebbd3e34237af26da5dc08a4e440464"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=b75cfa994a24f3aa65a2113aac020096"
 
-SRCREV = "76f71bc0c2e22d1f2d45bc24dee9edc52c9d698f"
+SRCREV = "f988991e4da4c906bedadb098335cd14c9491f57"
 SRC_URI = "git://github.com/SSSA-ampere/fred-linux-client-lib.git;branch=master"
-
 S = "${WORKDIR}/git"
 
 inherit cmake

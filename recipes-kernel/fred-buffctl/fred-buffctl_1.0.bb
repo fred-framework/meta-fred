@@ -1,18 +1,17 @@
 SUMMARY = "FRED buffer allocation kernel module"
-LICENSE = "CLOSED"
-#LICENSE = "GPLv2"
-#LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
- 
+HOMEPAGE = "http://fred.santannapisa.it/"
+SECTION = "fred"
+LICENSE = "GPLv3"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=ec22d6b9f6457f4614215eafdd5448f4"
+#TODO: currently gitlab.retis.santannapisa.it/a.amory/fred-kmods is assuming that all modules are under the same license, which might not be the case. review it and add a lic for each module.
+
 # required for modules
 inherit module
  
-SRCREV = "5752f336ac55e2af06b96c0776b87733076a6b70"
+SRCREV = "f6772396e943882fd3c54da75c5577710d9a25cb"
 SRC_URI = " \
     git://gitlab.retis.santannapisa.it/a.amory/fred-kmods.git;branch=fpga-mgr;protocol=https \
 "
- 
-#PV = "1.0+git${SRCPV}"
-
 S = "${WORKDIR}/git"
 
 RPROVIDES_${PN} += "fred-buffctl"  
