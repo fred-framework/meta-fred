@@ -148,7 +148,10 @@ workspace             /ssd/work/petalinux/2020.2/pynq-2020.2/pynq-2020.2/compone
 meta-fred             /ssd/work/petalinux/2020.2/pynq-2020.2/pynq-2020.2/components/ext_source/meta-fred  7
 
 $ bitbake-layers show-recipes > recipes.txt
-$ cat recipes.txt  | grep fred
+$ grep -i mgr recipes.txt
+efibootmgr:
+fpga-mgr-zynqmp-drv:
+$ grep -i fred recipes.txt
   meta-fred            1.0
 fred-buffctl:
   meta-fred            1.0
@@ -162,7 +165,7 @@ fred-tutorial:
 
 ```
 $ bitbake -e fred-lib | grep ^WORKDIR=
-WORKDIR="/<basedir>/pynq-2020.2/build/tmp/work/cortexa9t2hf-neon-xilinx-linux-gnueabi/fred-lib/1.0-r0"
+WORKDIR="/<basedir>/xilinx-zcu102-2020.2/build/tmp/work/aarch64-xilinx-linux/fred-lib/1.0-r0"
 ```
 
 ## Running the Custom Apps with QEMU
