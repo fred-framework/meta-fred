@@ -181,6 +181,23 @@ fred-server-lic
 fred-tutorial
 fred-tutorial-lic
 
+## Compiling the Device Tree
+
+```
+petalinux-build -c device-tree -x cleansstate
+petalinux-build -c device-tree
+cd images/linux
+dtc -I dtb -O dts -o system.dts system.dtb
+
+How to compile Device Tree in Yocto
+
+source ./components/yocto/layers/core/oe-init-build-env
+bitbake virtual/dtb -c compile -f
+bitbake virtual/kernel -f -c deploy
+
+
+```
+
 ## Running the Custom Apps with QEMU
 
 TO BE DONE !

@@ -1,0 +1,26 @@
+/include/ "system-conf.dtsi"
+/* DART generated device tree overlay */
+/dts-v1/;
+/plugin/;
+/ {
+    /* FRED slots layout */
+    fragment@0 {
+        target = <&amba>;
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <1>;
+            slot_p0_s0@A0000000 { 
+                compatible = "generic-uio";
+                reg = <0xA0000000 0x10000>;
+                interrupt-parent = <0x4>;
+                interrupts = <0x0 0x1d 0x4>; 
+                }; 
+
+            pr_decoupler_p0_s0@A0010000 { 
+                compatible = "generic-uio";
+                reg = <0xA0010000 0x10000>;
+                }; 
+
+        }; 
+    };  
+};
