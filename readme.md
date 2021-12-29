@@ -172,7 +172,7 @@ WORKDIR="/<basedir>/xilinx-zcu102-2020.2/build/tmp/work/aarch64-xilinx-linux/fre
 ```
 
 
-% cat build/tmp/deploy/licenses/petalinux-image-minimal-zynq-generic-20211228154035/package.manifest  | grep fred
+% cat linux/image/rootfs.manifest  | grep fred
 fed-lib
 fred-lib-dev
 fred-lib-lic
@@ -183,19 +183,32 @@ fred-tutorial-lic
 
 ## Compiling the Device Tree
 
+This step inserts the device-tree segment related to FRED reconfigurable partitions into the Linux device-tree.
+
+If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinusx project directory:
+
+```bash
+$ petalinux-build -c device-tree -x cleansstate
+$ petalinux-build -c device-tree
 ```
-petalinux-build -c device-tree -x cleansstate
-petalinux-build -c device-tree
-cd images/linux
-dtc -I dtb -O dts -o system.dts system.dtb
 
-How to compile Device Tree in Yocto
+The following commands are used just to check that the merge was succesful. One can see the `decoupler` and the `slot` devices required by FRED.
 
-source ./components/yocto/layers/core/oe-init-build-env
-bitbake virtual/dtb -c compile -f
-bitbake virtual/kernel -f -c deploy
+```bash
+$ cd images/linux
+$ dtc -I dtb -O dts -o system.dts system.dtb
+$ cat system3.dts | grep decoupler
+		pr_decoupler_p0_s0@A0010000 {
+$ cat system3.dts | grep slot
+		slot_p0_s0@A0000000 {
+```
 
+Next, is the *Yocto way* to update the device-tree.
 
+```bash
+$ source ./components/yocto/layers/core/oe-init-build-env
+$ bitbake virtual/dtb -c compile -f
+$ bitbake virtual/kernel -f -c deploy
 ```
 
 ## Running the Custom Apps with QEMU
