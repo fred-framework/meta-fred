@@ -166,7 +166,7 @@ fred-tutorial:
 **TODO**: a zynq device should show `fpga-mgr-zynq-drv` when running `grep -i mgr recipes.txt`. 
 
 
-```
+```bash
 $ bitbake -e fred-lib | grep ^WORKDIR=
 WORKDIR="/<basedir>/xilinx-zcu102-2020.2/build/tmp/work/aarch64-xilinx-linux/fred-lib/1.0-r0"
 ```
@@ -174,14 +174,18 @@ WORKDIR="/<basedir>/xilinx-zcu102-2020.2/build/tmp/work/aarch64-xilinx-linux/fre
 The following command shows the list of packages installed into the image.
 
 ```bash
-% cat linux/image/rootfs.manifest  | grep fred
-fed-lib
-fred-lib-dev
-fred-lib-lic
-fred-server
-fred-server-lic
-fred-tutorial
-fred-tutorial-lic
+$ cat images/linux/rootfs.manifest | grep fred
+fred-buffctl zynqmp_generic 1.0
+fred-buffctl-lic zynqmp_generic 1.0
+fred-lib aarch64 1.0
+fred-lib-lic aarch64 1.0
+fred-server aarch64 1.0
+fred-server-lic aarch64 1.0
+fred-tutorial aarch64 1.0
+fred-tutorial-lic aarch64 1.0
+$ cat images/linux/rootfs.manifest | grep mgr
+fpga-mgr-zynqmp-drv zynqmp_generic 1.0
+fpga-mgr-zynqmp-drv-lic zynqmp_generic 1.0
 ```
 
 ## Compiling the Device Tree
@@ -200,9 +204,9 @@ The following commands are used just to check that the merge was succesful. One 
 ```bash
 $ cd images/linux
 $ dtc -I dtb -O dts -o system.dts system.dtb
-$ cat system3.dts | grep decoupler
+$ cat system.dts | grep decoupler
 		pr_decoupler_p0_s0@A0010000 {
-$ cat system3.dts | grep slot
+$ cat system.dts | grep slot
 		slot_p0_s0@A0000000 {
 ```
 
@@ -212,6 +216,16 @@ Next, is the *Yocto way* to update the device-tree.
 $ source ./components/yocto/layers/core/oe-init-build-env
 $ bitbake virtual/dtb -c compile -f
 $ bitbake virtual/kernel -f -c deploy
+```
+
+## FRED startup Script
+
+The recipe `recipes-kernel\bootscript` starts up FRED right after boot using `init.d`. Like in the previous section, this is already integrated into the image when running the standard build for this `meta-fred` layer. However, if the script is modified, the following commands must be executed for the image update"
+
+```bash
+$ petalinux-build -c bootscript -x do_install -f
+$ petalinux-build -c rootfs
+$ petalinux-build
 ```
 
 ## Running the Custom Apps with QEMU
