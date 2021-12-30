@@ -171,7 +171,9 @@ $ bitbake -e fred-lib | grep ^WORKDIR=
 WORKDIR="/<basedir>/xilinx-zcu102-2020.2/build/tmp/work/aarch64-xilinx-linux/fred-lib/1.0-r0"
 ```
 
+The following command shows the list of packages installed into the image.
 
+```bash
 % cat linux/image/rootfs.manifest  | grep fred
 fed-lib
 fred-lib-dev
@@ -180,6 +182,7 @@ fred-server
 fred-server-lic
 fred-tutorial
 fred-tutorial-lic
+```
 
 ## Compiling the Device Tree
 
