@@ -22,3 +22,8 @@ do_compile (){
     cd fpga_mgr_zynqmp_drv
     oe_runmake
 }
+
+do_install (){
+    cd fpga_mgr_zynqmp_drv
+    oe_runmake
+}
