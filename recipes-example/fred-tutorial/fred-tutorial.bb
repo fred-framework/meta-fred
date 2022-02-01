@@ -5,7 +5,7 @@ LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=ac7257191405188e515dbd8d599826c6"
 
 SRCREV = "39c1978a82c27fbd4dd2b9de67f8e4070767b231"
-SRC_URI = "git://github.com/SSSA-ampere/fred-linux-example.git/;branch=main"
+SRC_URI = "git://github.com/fred-framework/fred-tutorial-app.git/;branch=main"
 S = "${WORKDIR}/git"
 
 inherit cmake
