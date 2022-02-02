@@ -19,11 +19,13 @@ S = "${WORKDIR}/git"
 RPROVIDES_${PN} += "zynqmp-fpga-fmod"  
 
 do_compile (){
-    cd fpga_mgr_zynqmp_drv
+    cd ${S}/fpga_mgr_zynqmp_drv
     oe_runmake
 }
 
-do_install (){
-    cd fpga_mgr_zynqmp_drv
-    oe_runmake
+# source : http://gopinaths.gitlab.io/post/prebuilt_module_in_yocto/
+do_install() {
+    MODULE_DIR=${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/fred 
+    install -d $MODULE_DIR
+    install -m 755 ${S}/fpga_mgr_zynqmp_drv/zynqmp-fpga-fmod.ko $MODULE_DIR
 }

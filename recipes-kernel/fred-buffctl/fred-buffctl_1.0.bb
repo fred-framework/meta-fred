@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ec22d6b9f6457f4614215eafdd5448f4"
 
 # required for modules
 inherit module
- 
+
 SRCREV = "f6772396e943882fd3c54da75c5577710d9a25cb"
 SRC_URI = " \
     git://gitlab.retis.santannapisa.it/a.amory/fred-kmods.git;branch=fpga-mgr;protocol=https \
@@ -17,11 +17,13 @@ S = "${WORKDIR}/git"
 RPROVIDES_${PN} += "fred-buffctl"  
 
 do_compile (){
-    cd fred_buffctl
+    cd ${S}/fred_buffctl
     oe_runmake
 }
 
-do_install (){
-    cd fred_buffctl
-    oe_runmake
+# source : http://gopinaths.gitlab.io/post/prebuilt_module_in_yocto/
+do_install() {
+    MODULE_DIR=${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/fred 
+    install -d $MODULE_DIR
+    install -m 755 ${S}/fred_buffctl/fred-buffctl.ko $MODULE_DIR
 }
