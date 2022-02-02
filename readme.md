@@ -163,7 +163,7 @@ fred-tutorial:
   meta-fred            1.0
 ```
 
-**TODO**: a zynq device should show `fpga-mgr-zynq-drv` when running `grep -i mgr recipes.txt`. 
+In a zynq device you should see `fpga-mgr-zynq-drv` instead of `fpga-mgr-zynqmp-drv` when running `grep -i mgr recipes.txt`. 
 
 
 ```bash
@@ -183,23 +183,60 @@ fred-server aarch64 1.0
 fred-server-lic aarch64 1.0
 fred-tutorial aarch64 1.0
 fred-tutorial-lic aarch64 1.0
+kernel-module-fred-buffctl-5.4.0-xilinx-v2020.2 zynqmp_generic 1.0
 $ cat images/linux/rootfs.manifest | grep mgr
 fpga-mgr-zynqmp-drv zynqmp_generic 1.0
 fpga-mgr-zynqmp-drv-lic zynqmp_generic 1.0
+$ cat rootfs.manifest | grep fmod
+kernel-module-zynqmp-fpga-fmod-5.4.0-xilinx-v2020.2 zynqmp_generic 1.0
 ```
+
+## Installed files
+
+This layer will install the following file into the Linux image:
+
+```
+/usr/bin/fred-server
+/lib/modules/${KERNEL_VERSION}/kernel/drivers/fred/fred-buffctl.ko
+/lib/modules/${KERNEL_VERSION}/kernel/drivers/fred/zynqmp-fpga-fmod.ko
+/usr/bin/fred-test-cli
+/usr/lib/libfred.so
+```
+where `KERNEL_VERSION=5.4.0-xilinx-v2020.2`.
 
 ## Compiling the Device Tree
 
-This step inserts the device-tree segment related to FRED reconfigurable partitions into the Linux device-tree.
+The device tree must be generated with embedded labels so these labels can be referenced later in the device tree overlays in runtime. To do so, `dtc` must be executed the `-@` argument. This will make dtc retain information about labels when generating a dtb file, which will allow Linux to figure out at runtime what device tree node a label was referring to. To embed the labels in the devicetree using petalinux, the `CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS` option must be set. In the base directory run the following command:
 
-If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinusx project directory:
+```
+$ grep -r CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS --include="config" .
+./project-spec/configs/config:CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS="-@"
+./pre-built/linux/images/config:CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS="-@"
+```
+
+This step inserts the device-tree segment related to FRED reconfigurable partitions into the Linux device-tree. If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinusx project directory:
 
 ```bash
 $ petalinux-build -c device-tree -x cleansstate
 $ petalinux-build -c device-tree
 ```
 
-The following commands are used just to check that the merge was succesful. One can see the `decoupler` and the `slot` devices required by FRED.
+Next, is the *Yocto way* to update the device-tree.
+
+```bash
+$ source ./components/yocto/layers/core/oe-init-build-env
+$ bitbake virtual/dtb -c compile -f
+$ bitbake virtual/kernel -f -c deploy
+```
+
+Currently **the recipe to add FRED componentes to the devicetree is not working**. The work-around is to perform these commands before building the image:
+
+```
+cp components/ext_source/meta-fred/recipes-kernel/device-tree/files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
+mv components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend_xxx
+```
+
+Once the image has been built, execute the following commands to check that the devicetree merge was succesful. One can see the `decoupler` and the `slot` devices required by FRED.
 
 ```bash
 $ cd images/linux
@@ -210,12 +247,13 @@ $ cat system.dts | grep slot
 		slot_p0_s0@A0000000 {
 ```
 
-Next, is the *Yocto way* to update the device-tree.
+When running the image, the devicetree data is available at:
 
-```bash
-$ source ./components/yocto/layers/core/oe-init-build-env
-$ bitbake virtual/dtb -c compile -f
-$ bitbake virtual/kernel -f -c deploy
+```
+/boot/devicetree/system-top.dtb
+/sys/firmware/devicetree/base/__symbols__/
+/sys/kernel/config/device-tree/overlays/
+/proc/device-tree
 ```
 
 ## FRED startup Script
