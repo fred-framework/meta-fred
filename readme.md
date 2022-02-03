@@ -92,6 +92,27 @@ Save the configuration and press ESC until quit the application. Finally, build 
 
 This last command takes a long time. Go take a coffee !
 
+# Kernel requirements
+
+The Linux kernel must be compiled with **overlay filesystem** enabled. On the board one can check it with this command:
+
+```
+$ zcat /proc/config.gz | grep OVERLAY
+CONFIG_OF_OVERLAY=y
+CONFIG_OVERLAY_FS=y
+# CONFIG_OVERLAY_FS_REDIRECT_DIR is not set
+CONFIG_OVERLAY_FS_REDIRECT_ALWAYS_FOLLOW=y
+# CONFIG_OVERLAY_FS_INDEX is not set
+# CONFIG_OVERLAY_FS_XINO_AUTO is not set
+# CONFIG_OVERLAY_FS_METACOPY is not set
+```
+
+During design time, run:
+
+```
+$ petalinux-config -c kernel
+```
+
 ## Adding meta-fred Layer to a petalinux Project
 
 Now we add the meta-fred Yocto layer, following similar steps as in this [link](https://www.zachpfeffer.com/single-post/Add-a-Yocto-Layer-to-a-PetaLinux-Project-and-Build-a-Recipe-in-the-Layer-with-PetaLinux-Tools), with some simplications:

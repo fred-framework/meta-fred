@@ -1,12 +1,12 @@
 /include/ "system-conf.dtsi"
 / {
     amba {
-        #address-cells = <1>;
-        #size-cells = <1>;
+        #address-cells = <2>;
+        #size-cells = <2>;
         slot_p0_s0@A0000000 { 
             compatible = "generic-uio";
             reg = <0xA0000000 0x10000>;
-            interrupt-parent = <0x4>;
+            interrupt-parent = <&gic>;
             interrupts = <0x0 0x1d 0x4>; 
             }; 
 
