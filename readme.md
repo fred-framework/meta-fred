@@ -372,6 +372,8 @@ $ insmod /lib/modules/5.4.0-xilinx-v2020.2/kernel/drivers/fred/zynqmp-fpga-fmod.
 
 The recipe `recipes-kernel\bootscript` starts up FRED right after boot using `init.d`. Like in the previous section, this is already integrated into the image when running the standard build for this `meta-fred` layer. However, if the script is modified, the following commands must be executed for the image update"
 
+https://tuxengineering.com/blog/2021/07/17/Upgrading-Petalinux-2021.html
+
 ```bash
 $ petalinux-build -c bootscript -x do_install -f
 $ petalinux-build -c rootfs
