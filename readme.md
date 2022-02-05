@@ -225,7 +225,11 @@ This layer will install the following file into the Linux image:
 ```
 where `KERNEL_VERSION=5.4.0-xilinx-v2020.2`.
 
-## Compiling the Device Tree
+The `rootfs` is mounted in `build/tmp/work/zynqmp_generic-xilinx-linux/<image-name>/1.0-r0/rootfs`.
+
+
+
+## Compiling the Device Tree for the Reconfigurable Regions - design time approach
 
 The device tree must be generated with embedded labels so these labels can be referenced later in the device tree overlays in runtime. To do so, `dtc` must be executed the `-@` argument. This will make dtc retain information about labels when generating a dtb file, which will allow Linux to figure out at runtime what device tree node a label was referring to. To embed the labels in the devicetree using petalinux, the `CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS` option must be set. In the base directory run the following command:
 
@@ -235,7 +239,7 @@ $ grep -r CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS --include="config" .
 ./pre-built/linux/images/config:CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS="-@"
 ```
 
-This step inserts the device-tree segment related to FRED reconfigurable partitions into the Linux device-tree. If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinusx project directory:
+This step inserts the device-tree segment related to FRED reconfigurable regions (RR) into the Linux device-tree. If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinusx project directory:
 
 ```bash
 $ petalinux-build -c device-tree -x cleansstate
@@ -253,11 +257,11 @@ $ bitbake virtual/kernel -f -c deploy
 Currently **the recipe to add FRED componentes to the devicetree is not working**. The work-around is to perform these commands before building the image:
 
 ```
-cp components/ext_source/meta-fred/recipes-kernel/device-tree/files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
-mv components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend_xxx
+$ cp components/ext_source/meta-fred/recipes-kernel/device-tree/files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
+$ mv components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend_xxx
 ```
 
-Once the image has been built, execute the following commands to check that the devicetree merge was succesful. One can see the `decoupler` and the `slot` devices required by FRED.
+Once the image has been built, execute the following commands to check that the devicetree merge was succesful. One can see the `decoupler` and the `slot` devices required by FRED. In this case there is only one reconfigurable region.
 
 ```bash
 $ cd images/linux
@@ -268,6 +272,40 @@ $ cat system.dts | grep slot
 		slot_p0_s0@A0000000 {
 ```
 
+Once in the board, the device tree can be checked running:
+
+```
+$ ls /proc/device-tree/amba/
+#address-cells
+...
+pr_decoupler_p0_s0@A0010000
+...
+slot_p0_s0@A0000000
+...
+```
+
+## Compiling the Device Tree for the Reconfigurable Regions - overlay approach
+
+Using device tree overlay it is possible to patch the device tree in while running the system.
+
+```
+$ dtc -O dtb -o fred.dtbo -b 0 -@ fred.dts
+$ mkdir -p /sys/kernel/config/device-tree/overlays/fred-static
+$ cat fred.dtbo > /sys/kernel/config/device-tree/overlays/fred-static/dtbo
+```
+
+If there are no messages, proceed to check the device tree executing:
+
+```
+$ ls /proc/device-tree/amba/
+#address-cells
+...
+pr_decoupler_p0_s0@A0010000
+...
+slot_p0_s0@A0000000
+...
+```
+
 When running the image, the devicetree data is available at:
 
 ```
@@ -276,6 +314,59 @@ When running the image, the devicetree data is available at:
 /sys/kernel/config/device-tree/overlays/
 /proc/device-tree
 ```
+
+## Replacing `zynqmp-pcap-fpga` driver
+
+FRED replaces the `zynqmp-pcap-fpga` driver for the PCAP interface by a custom driver called `zynqmp-pcap-fpga-fmod`.
+Thus, the PCAP segment of the device tree must change the PCAP `compatible` attribute to use the modified driver. See the following example of the original device tree segment:
+
+```
+zynqmp_pcap: pcap {
+        compatible = "xlnx,zynqmp-pcap-fpga";
+        ...
+};
+```
+and the modified one:
+
+```
+zynqmp_pcap: pcap {
+        compatible = "xlnx,zynqmp-pcap-fpga-fmod";
+        ...
+};
+```
+
+The easiest way to perform this replacement is to do it after the image is completly generated an executing the following commands:
+
+```
+cd images/linux
+cp system.dtb system-bkp.dtb
+cp image.ub image-bkp.ub
+dtc -O dts -o system.dts -b 0 -@ system.dtb
+sed -i 's/zynqmp-pcap-fpga/zynqmp-pcap-fpga-fmod/g' system.dts
+dtc -O dtb -o system.dtb -b 0 -@ system.dts
+mkimage -f image.its image.ub
+petalinux-package --boot --force --fsbl zynqmp_fsbl.elf --fpga system.bit --pmufw pmufw.elf --atf bl31.elf --u-boot u-boot.elf
+```
+
+These steps retrieve the DTS file, patch it with the modified driver name, regenerate the DTB, and merge again the `Image` and  `system.dtb`, forming the boot image file `image.ub`. Then, perform the usual data copy to the SD card.
+
+When running in the board, please check whether PCAP is using the modified driver.
+
+```
+$ cat /sys/firmware/devicetree/base/firmware/zynqmp-firmware/pcap/compatible 
+xlnx,zynqmp-pcap-fpga-fmod
+```
+
+Note that this driver can only be configured prior the system execution. Thus, it's not possible to use the overlay approach to load it since this is loaded during boot and it cannot be relaced in runtime.
+
+## Running FRED manually
+
+
+```
+$ insmod /lib/modules/5.4.0-xilinx-v2020.2/kernel/drivers/fred/fred-buffctl.ko
+$ insmod /lib/modules/5.4.0-xilinx-v2020.2/kernel/drivers/fred/zynqmp-fpga-fmod.ko
+```
+
 
 ## FRED startup Script
 
