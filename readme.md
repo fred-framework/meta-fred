@@ -359,42 +359,21 @@ $ petalinux-build -c rootfs
 $ petalinux-build
 ```
 
-## Running the Custom Apps with QEMU
+## Suggested Git Branch Organization
 
-TO BE DONE !
-https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/821395464/QEMU+User+Documentation
-https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/862421112/Co-simulation
+This is suggested the git branch organization for the support of future petalinux versions. 
 
-petalinux-boot --qemu --prebuilt 3
-
-petalinux-boot --qemu --image ./images/linux/zImage
-
-To quit the emulation, press CTRL+A followed by X.
-
-## Running the Custom Apps in the FPGA
-
-
-petalinux-package --boot --format BIN --fsbl images/linux/zynq_fsbl.elf --kernel images/linux/image.ub --u-boot images/linux/u-boot.elf --fpga images/linux/<NAME_OF_BITSREAM>.bit
-
-
-
-Remember that the `/mnt/yocto/tmp` is shared between the docker image and the host, so it's easy to burn the image file into an SD card.
-
-Return to the host computer and run `df` to find out the SD card device (assuming it is `/dev/sdb`) and run:
-
-```bash
-$ sudo dd if=/<host mounting point>/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3.rpi-sdimg of=/dev/sdb bs=4M
 ```
-
-Check out more information on these links:
-
- - https://george-calin.medium.com/how-to-prepare-a-helloworld-c-recipe-with-yocto-project-1f74c296a777
- - https://tutorialadda.com/yocto/create-your-own-linux-image-for-the-raspberry-pi-board-using-yocto-project
-
+main
+├── v2020.2
+├── v2021.1
+└── ...
+```
 
 ## TO DO
 
  - [ ] build the correct kernel module based on the FPGA model , e.g. `zynq` or `zynqmp`;
+ - [ ] automatically load FRED kernel modules;
  - [ ] include the device tree from DART;
  - [ ] make a [cmake module](https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Find-Libraries) for `fred-lib`;
  - [ ] Use [SystemC cosim](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/862421112/Co-simulation) for testing FRED;

@@ -9,8 +9,10 @@ deploy_manifest () {
 }
 
 copy_scripts () {
-    META_FRED_DIR="${TOPDIR}/../components/ext_source/meta-fred/
-    cp ${META_FRED_DIR}/scripts/update_hw ${IMAGE_ROOTFS}/usr/bin/update_hw
+    META_FRED_DIR="${TOPDIR}/../components/ext_source/meta-fred/"
+    if [ -e "${IMAGE_ROOTFS}" ]; then
+        cp ${META_FRED_DIR}/scripts/update_hw ${IMAGE_ROOTFS}/usr/bin/update_hw
+    fi
 }
 
 # executes the procedure recommended in
