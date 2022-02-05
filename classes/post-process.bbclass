@@ -1,4 +1,5 @@
 ROOTFS_POSTPROCESS_COMMAND += "deploy_manifest;"
+ROOTFS_POSTPROCESS_COMMAND += "copy_scripts;"
 IMAGE_POSTPROCESS_COMMAND += "patch_pcap_devicetree;"
 
 deploy_manifest () {
@@ -7,6 +8,14 @@ deploy_manifest () {
     fi
 }
 
+copy_scripts () {
+    META_FRED_DIR="${TOPDIR}/../components/ext_source/meta-fred/
+    cp ${META_FRED_DIR}/scripts/update_hw ${IMAGE_ROOTFS}/usr/bin/update_hw
+}
+
+# executes the procedure recommended in
+# https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841676/U-Boot+Flattened+Device+Tree
+# to patch the devicetree
 patch_pcap_devicetree () {
     PETA_DEPLOY_DIR="${TOPDIR}/../images/linux"
     cd ${PETA_DEPLOY_DIR}

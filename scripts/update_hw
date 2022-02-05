@@ -1,0 +1,11 @@
+#!/bin/bash
+# update the DART design in the board
+# usage: update_hw <user> <ip> <path>
+
+mkdir -p /opt/fredsys/
+cd /opt/fredsys/
+rm -rf /opt/fredsys/*
+scp $1\@$2:$3/fred.tar.gz .
+tar xzf fred.tar.gz .
+echo "DART hw design was updated !"
+cd -

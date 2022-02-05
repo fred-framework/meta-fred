@@ -239,26 +239,11 @@ $ grep -r CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS --include="config" .
 ./pre-built/linux/images/config:CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS="-@"
 ```
 
-This step inserts the device-tree segment related to FRED reconfigurable regions (RR) into the Linux device-tree. If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinusx project directory:
+This step inserts the device-tree segment related to FRED reconfigurable regions (RR) into the Linux device-tree. If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinux project directory:
 
 ```bash
 $ petalinux-build -c device-tree -x cleansstate
 $ petalinux-build -c device-tree
-```
-
-Next, is the *Yocto way* to update the device-tree.
-
-```bash
-$ source ./components/yocto/layers/core/oe-init-build-env
-$ bitbake virtual/dtb -c compile -f
-$ bitbake virtual/kernel -f -c deploy
-```
-
-Currently **the recipe to add FRED componentes to the devicetree is not working**. The work-around is to perform these commands before building the image:
-
-```
-$ cp components/ext_source/meta-fred/recipes-kernel/device-tree/files/system-user.dtsi project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
-$ mv components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend components/ext_source/meta-fred/recipes-kernel/device-tree/device-tree.bbappend_xxx
 ```
 
 Once the image has been built, execute the following commands to check that the devicetree merge was succesful. One can see the `decoupler` and the `slot` devices required by FRED. In this case there is only one reconfigurable region.
@@ -317,8 +302,7 @@ When running the image, the devicetree data is available at:
 
 ## Replacing `zynqmp-pcap-fpga` driver
 
-FRED replaces the `zynqmp-pcap-fpga` driver for the PCAP interface by a custom driver called `zynqmp-pcap-fpga-fmod`.
-Thus, the PCAP segment of the device tree must change the PCAP `compatible` attribute to use the modified driver. See the following example of the original device tree segment:
+FRED replaces the `zynqmp-pcap-fpga` driver for the PCAP interface by a custom driver called `zynqmp-pcap-fpga-fmod`. Thus, the PCAP segment of the device tree must change the PCAP `compatible` attribute to use the modified driver. See the following example of the original device tree segment:
 
 ```
 zynqmp_pcap: pcap {
@@ -335,38 +319,33 @@ zynqmp_pcap: pcap {
 };
 ```
 
-The easiest way to perform this replacement is to do it after the image is completly generated an executing the following commands:
+This replacement is executed after the image is completly generated, running the following commands:
 
 ```
-cd images/linux
-cp system.dtb system-bkp.dtb
-cp image.ub image-bkp.ub
-dtc -O dts -o system.dts -b 0 -@ system.dtb
-sed -i 's/zynqmp-pcap-fpga/zynqmp-pcap-fpga-fmod/g' system.dts
-dtc -O dtb -o system.dtb -b 0 -@ system.dts
-mkimage -f image.its image.ub
-petalinux-package --boot --force --fsbl zynqmp_fsbl.elf --fpga system.bit --pmufw pmufw.elf --atf bl31.elf --u-boot u-boot.elf
+$ cd images/linux
+$ cp system.dtb system-bkp.dtb
+$ cp image.ub image-bkp.ub
+$ dtc -O dts -o system.dts -b 0 -@ system.dtb
+$ sed -i 's/zynqmp-pcap-fpga/zynqmp-pcap-fpga-fmod/g' system.dts
+$ dtc -O dtb -o system.dtb -b 0 -@ system.dts
+$ mkimage -f image.its image.ub
 ```
 
-These steps retrieve the DTS file, patch it with the modified driver name, regenerate the DTB, and merge again the `Image` and  `system.dtb`, forming the boot image file `image.ub`. Then, perform the usual data copy to the SD card.
+These steps, defined in [`classes/post-process.bbclass`](./classes/post-process.bbclass),
+retrieve the DTS file, patch it with the modified driver name, regenerate the DTB, and merge again the `Image` and  `system.dtb`, forming the boot image file `image.ub` with the modifed driver name. 
 
-When running in the board, please check whether PCAP is using the modified driver.
+Finally, perform the usual data copy to the SD card. When running in the board, please check whether PCAP is using the modified driver.
 
 ```
 $ cat /sys/firmware/devicetree/base/firmware/zynqmp-firmware/pcap/compatible 
 xlnx,zynqmp-pcap-fpga-fmod
 ```
 
-Note that this driver can only be configured prior the system execution. Thus, it's not possible to use the overlay approach to load it since this is loaded during boot and it cannot be relaced in runtime.
+Note that the PCAP driver can only be configured prior the system execution. Thus, it's not possible to use the overlay approach to load it since it is loaded during boot and it cannot be replaced in runtime.
 
 ## Running FRED manually
 
-
-```
-$ insmod /lib/modules/5.4.0-xilinx-v2020.2/kernel/drivers/fred/fred-buffctl.ko
-$ insmod /lib/modules/5.4.0-xilinx-v2020.2/kernel/drivers/fred/zynqmp-fpga-fmod.ko
-```
-
+Both FRED kernel modules are located in the `/lib/modules/<kernel-version>/kernel/drivers/fred/` directory in the generated image. These modules are automatically loaded by default during boot. To change this, comment out the lines with the `KERNEL_MODULE_AUTOLOAD` option in [`./conf/layer.conf`](./conf/layer.conf).
 
 ## FRED startup Script
 
