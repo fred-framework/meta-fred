@@ -2,10 +2,47 @@
 # update the DART design in the board
 # usage: update_hw <user> <ip> <path>
 
+usage(){
+    echo "usage #1: run \`update_hw <user> <ip> <path>\`\n"
+    echo "usage #2: set the environment variables FRED_USER, FRED_IP, FRED_PATH. Then run \`update_hw\`\n"
+    exit 1
+}
+
+if [[ -z "${FRED_USER}" ]]; then
+  SCP_USERNAME=$1
+else
+  SCP_USERNAME="${FRED_USER}"
+fi
+
+if [[ -z "${FRED_IP}" ]]; then
+  SCP_IP=$2
+else
+  SCP_IP="${FRED_IP}"
+fi
+
+if [[ -z "${FRED_PATH}" ]]; then
+  SCP_PATH=$3
+else
+  SCP_PATH="${FRED_PATH}"
+fi
+
 mkdir -p /opt/fredsys/
 cd /opt/fredsys/
 rm -rf /opt/fredsys/*
-scp $1\@$2:$3/fred.tar.gz .
+scp ${SCP_USERNAME}\@${SCP_IP}:${SCP_PATH}/fred.tar.gz .
+RESULT=$?
+if [ $RESULT -gt 0 ]; then
+  echo "ERROR running scp\n"
+  usage
+fi
+
 tar xzf fred.tar.gz .
-echo "DART hw design was updated !"
+RESULT=$?
+if [ $RESULT -gt 0 ]; then
+  echo "ERROR running tar\n"
+  usage
+fi
+
+echo "DART hw design was updated in /opt/fredsys/!"
 cd -
+exit 0
