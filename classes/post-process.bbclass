@@ -1,5 +1,7 @@
 ROOTFS_POSTPROCESS_COMMAND += "deploy_manifest;"
 ROOTFS_POSTPROCESS_COMMAND += "copy_scripts;"
+ROOTFS_POSTPROCESS_COMMAND += "copy_dart_design;"
+ROOTFS_POSTPROCESS_COMMAND += "set_env_vars;"
 IMAGE_POSTPROCESS_COMMAND += "patch_pcap_devicetree;"
 
 deploy_manifest () {
@@ -14,6 +16,28 @@ copy_scripts () {
         cp ${META_FRED_DIR}/scripts/update_hw ${IMAGE_ROOTFS}/usr/bin/update_hw
     fi
 }
+
+# if there is a fred.tar.gz in the base patalinux directory, this file will be inserted into the image
+copy_dart_design () {
+    FRED_TAR_GZ="${TOPDIR}/../fred.tar.gz"
+    if [ -e "${FRED_TAR_GZ}" ]; then
+        mkdir -p ${IMAGE_ROOTFS}/opt/fredsys
+        cp ${FRED_TAR_GZ} ${IMAGE_ROOTFS}/opt/fredsys
+        cd ${IMAGE_ROOTFS}/opt/fredsys
+        tar xzf fred.tar.gz .
+    fi
+}
+
+# place your environment variables here
+set_env_vars(){
+    mkdir -p ${IMAGE_ROOTFS}/etc/profile.d 
+    #echo "export BOARD=${MACHINE}" > ${IMAGE_ROOTFS}/etc/profile.d/set_board_env
+    echo "alias ll=ls -lah" > ${IMAGE_ROOTFS}/etc/profile.d/set_alias
+    echo "alias h=history | grep $1" >> ${IMAGE_ROOTFS}/etc/profile.d/set_alias
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "set_board_env;"
+
 
 # executes the procedure recommended in
 # https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841676/U-Boot+Flattened+Device+Tree
