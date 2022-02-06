@@ -94,7 +94,7 @@ This last command takes a long time. Go take a coffee !
 
 # Kernel requirements
 
-The Linux kernel must be compiled with **overlay filesystem** enabled. On the board one can check it with this command:
+The Linux kernel must be compiled with **overlay filesystem** and **FPGA Manager** enabled. On the board one can check it with this command:
 
 ```
 $ zcat /proc/config.gz | grep OVERLAY
@@ -106,6 +106,24 @@ CONFIG_OVERLAY_FS_REDIRECT_ALWAYS_FOLLOW=y
 # CONFIG_OVERLAY_FS_XINO_AUTO is not set
 # CONFIG_OVERLAY_FS_METACOPY is not set
 ```
+
+```
+~# zcat /proc/config.gz | grep FPGA
+CONFIG_FPGA=y
+# CONFIG_FPGA_MGR_DEBUG_FS is not set
+...
+CONFIG_FPGA_MGR_ZYNQMP_FPGA=y
+CONFIG_FPGA_MGR_VERSAL_FPGA=y
+```
+
+The following parameters must be enabled:
+- `CONFIG_UIO`: [Userspace I/O drivers](https://www.kernel.org/doc/html/v4.11/driver-api/uio-howto.html);
+- `CONFIG_UIO_PCI_GENERIC`: Generic driver for PCI 2.3 and PCI Express cards;
+- `DEVTMPFS`: Maintain a devtmpfs filesystem to mount at /dev;
+- `DEVTMPFS_MOUNT`: Automount devtmpfs at /dev;
+
+CONFIG_UIO_PCI_GENERIC=y
+# CONFIG_UIO_XILINX_APM is not set
 
 During design time, run:
 
@@ -359,6 +377,63 @@ $ petalinux-build -c rootfs
 $ petalinux-build
 ```
 
+## Suggested development workflow
+
+When testing a new design, it's normal to have to recompile packages multiple times. The suggested workflow is to add package mangement into the image, cross-compile the package with petalinux, and install the updated package into the board. Here is an example assuming that `fred-server` package was updated.
+
+In the host computer:
+
+ - Push the modification to fred-server repository;
+ - Change the fred-server recipe to `SRCREV = "${AUTOREV}"`, making petalinux fetch the latest code revision;
+ - Add the following commands to the `./conf/layer.conf` file:
+```
+EXTRA_IMAGE_FEATURES += " package-management " 
+PACKAGE_FEED_URIS = "http://<host-ip>:8000" 
+```
+The first command installs the package-management tool (opkg, dnf, apt), depending on the format selected next. The default is rpm. The second points to the package repository.
+ - Start the package repository webserver running:
+```
+$ cd ./build/tmp/deploy/rpm
+$ python -m SimpleHTTPServer
+```
+
+These steps above are done only once. The next ones are executed every time the package is updated:
+
+ - Clean the local source code with `$ petalinux -c fred-server -x cleanall`;
+ - Fetch the new source code and compile it with `$ petalinux -c fred-server`;
+ - Update the package repository running `petalinux-build -c package-index`;
+ - 
+
+Back to the board, check the content of `/etc/yum.repos.d/` to see if it is pointing to the package repository. For example:
+
+```
+$ cat /etc/yum.repos.d/oe-remote-repo.repo 
+[oe-remote-repo]
+name=OE Remote Repo:
+baseurl=http://<host-ip>:8000
+gpgcheck=0
+```
+
+Then, execute:
+
+```
+$ dnf update
+$ dnf install fred-server
+```
+
+### Board and package repository not on the same network
+
+
+3123  ssh -N ubuntu@localhost -L 8000: 10.30.3.59:8000
+ 3124  ssh -N ubuntu@localhost -L 8001: 10.30.3.59:8000
+ 3135  ping 10.30.3.59:8000
+ 3137  ping https://10.30.3.59:8000
+ 3138  ping http://10.30.3.59:8000
+ 3139  traceroute6 https://10.30.3.59:8000
+ 3140  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 10.30.3.59:8000
+ 3141  sudo iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 10.30.3.59:8000
+
+
 ## Suggested Git Branch Organization
 
 This is suggested the git branch organization for the support of future petalinux versions. 
@@ -369,6 +444,13 @@ main
 ├── v2021.1
 └── ...
 ```
+
+## References
+
+ - [Zynq PL Programming With FPGA Manager](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841645/Solution+Zynq+PL+Programming+With+FPGA+Manager);
+ - [ZynqMP PL Programming](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841847/Solution+ZynqMP+PL+Programming);
+ - [U-Boot Flattened Device Tree](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841676/U-Boot+Flattened+Device+Tree);
+ - 
 
 ## TO DO
 
