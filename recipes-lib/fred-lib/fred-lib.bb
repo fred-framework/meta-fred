@@ -4,9 +4,15 @@ SECTION = "fred"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=b75cfa994a24f3aa65a2113aac020096"
 
+# use this line if you want to get the latest commit of the branch
+#SRCREV = "${AUTOREV}"
+# or use this line to get a specific commit
 SRCREV = "f988991e4da4c906bedadb098335cd14c9491f57"
 SRC_URI = "git://github.com/fred-framework/fred-linux-client-lib.git;branch=master"
 S = "${WORKDIR}/git"
+
+# change the version
+PV = "1.0+git${SRCPV}"
 
 inherit cmake
 

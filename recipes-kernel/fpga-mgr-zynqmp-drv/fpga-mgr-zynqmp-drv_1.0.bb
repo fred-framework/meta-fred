@@ -7,12 +7,18 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ec22d6b9f6457f4614215eafdd5448f4"
 
 # required for modules
 inherit module
- 
+
+# use this line if you want to get the latest commit of the branch
+#SRCREV = "${AUTOREV}"
+# or use this line to get a specific commit
 SRCREV = "f6772396e943882fd3c54da75c5577710d9a25cb"
 SRC_URI = " \
     git://gitlab.retis.santannapisa.it/a.amory/fred-kmods.git;branch=fpga-mgr;protocol=https \
 "
 S = "${WORKDIR}/git"
+
+# change the version
+PV = "1.0+git${SRCPV}"
 
 #RPROVIDES_${PN} += "fpga-mgr-zynqmp-drv"
 RPROVIDES_${PN} += "zynqmp-fpga-fmod"  
