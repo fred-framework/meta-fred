@@ -13,6 +13,13 @@ else()
     set (FRED_PATH ${CMAKE_INSTALL_PREFIX})
 endif()
 
+#select the release build type by default to get optimization flags
+if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE "Release")
+   message(STATUS "Build type not specified: defaulting to release.")
+endif(NOT CMAKE_BUILD_TYPE)
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "")
+
 # enforce the depedency to libfred. It must be installed before compiling an application
 find_library(LIBFRED
     NAMES fred libfred fred-lib fredlib

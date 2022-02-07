@@ -16,7 +16,7 @@ This layer depends on:
   * branch: master
   * revision: HEAD
 
-## Choosing the petalinux and Yocto versions
+### Choosing the petalinux and Yocto versions
 
 In this tutorial we are using **petalinux 2020.2** and it assumes it is already installed. According to this [page](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841883/Yocto), petalinux 2020.2 is associated with Yocto 3.0 (zeus) and Linux kernel 5.4. This information is important because, in the future when we need to update petalinux version, we have to change the Yocto version in `meta-fred` by changing this file `conf/layer.conf`. Currently this file says that `meta-fred` is compatible with Yocto `zeus`. 
 
@@ -25,12 +25,14 @@ LAYERSERIES_COMPAT_meta-fred = "zeus"
 ```
 In fact, 2020.1 is the oldest supported version of petalinux. The recipe `recipes-kernel/fpga-mgr-zynqmp-drv/fpga-mgr-zynqmp-drv_1.0.bb` depends on an update of the `fpga-mgr` kernel module that was only inserted in Linux kernel 5.4. Except for this recipe, meta-fred would *probably* be compatible with older petalinux versions too.
 
-## Supported FPGA platforms 
+### Supported FPGA platforms 
 
 FRED is tested in zynq and zynqmp devices, namely zcu102-zynqmp, pynq-z1, and Ultra96-zynqmp. 
 Petalinux/Yocto has a variable called `MACHINE` that specifies the target hardware. This variable is automatically set when we assign a XSA or BSP file to a petalinux project. One can check the list of Xilinx machines in the directory `./components/yocto/layers/meta-xilinx/meta-xilinx-bsp/conf/machine/` under a petalinux project. In the petalinux flow, `MACHINE` can be viewed in  *petalinux-config --> Yocto settings --> () MACHINE NAME.*
 
-## Building a Standard petalinux Project for a Zynq device
+## Building a Standard petalinux Project
+
+### Building for a Zynq device
 
 Follow the standard steps to build a petalinux project for a zynq device, in this case the Pynq board:
 
@@ -61,7 +63,7 @@ Save the configuration and press ESC until quit the application. Finally, build 
 
 This last command takes a long time. Go take a coffee !
 
-## Building a Standard petalinux Project for a ZynqMP device
+### Building for a ZynqMP device
 
 This is the procedure for Zynq Ultra Scale+, in this case the zcu102 board:
 
@@ -94,48 +96,28 @@ This last command takes a long time. Go take a coffee !
 
 ## Kernel requirements
 
-The Linux kernel must be compiled with **overlay filesystem** and **FPGA Manager** enabled. On the board one can check it with this command:
-
-```
-$ zcat /proc/config.gz | grep OVERLAY
-CONFIG_OF_OVERLAY=y
-CONFIG_OVERLAY_FS=y
-# CONFIG_OVERLAY_FS_REDIRECT_DIR is not set
-CONFIG_OVERLAY_FS_REDIRECT_ALWAYS_FOLLOW=y
-# CONFIG_OVERLAY_FS_INDEX is not set
-# CONFIG_OVERLAY_FS_XINO_AUTO is not set
-# CONFIG_OVERLAY_FS_METACOPY is not set
-```
-
-```
-~# zcat /proc/config.gz | grep FPGA
-CONFIG_FPGA=y
-# CONFIG_FPGA_MGR_DEBUG_FS is not set
-...
-CONFIG_FPGA_MGR_ZYNQMP_FPGA=y
-CONFIG_FPGA_MGR_VERSAL_FPGA=y
-```
-
-The following parameters must be enabled:
+Luckly, all kernel parameters mentioned in this section are alredy enabled by default. So no action is required to configure the kernel. But for documentation purposes, these is the list of parameters that must be enabled on the Linux kernel:
+- `CONFIG_OF_OVERLAY`: Enables the use of devivetree overlay;
+- `CONFIG_OVERLAY_FS`: Enables the use of devivetree overlay;
+- `CONFIG_FPGA`: enables the FPGA manager;
 - `CONFIG_UIO`: [Userspace I/O drivers](https://www.kernel.org/doc/html/v4.11/driver-api/uio-howto.html);
 - `CONFIG_UIO_PCI_GENERIC`: Generic driver for PCI 2.3 and PCI Express cards;
 - `CONFIG_UIO_PDRV_GENIRQ`: Userspace I/O plataform driver with generic IRW handling;
 - `DEVTMPFS`: Maintain a devtmpfs filesystem to mount at /dev;
 - `DEVTMPFS_MOUNT`: Automount devtmpfs at /dev;
 
-``` 
-
-
-CONFIG_UIO_PCI_GENERIC=y
-# CONFIG_UIO_XILINX_APM is not set
-https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18842046/APM
-```
-
-During design time, run:
+During design time, run to configure/check the parameters:
 
 ```
 $ petalinux-config -c kernel
 ```
+
+On the board, check the kernel parameters with this command:
+
+```
+$ zcat /proc/config.gz | grep OVERLAY
+```
+
 ## Bootloader requirements
 
 The original arguments for Uboot booloader are:
@@ -147,11 +129,12 @@ $ cat /proc/cmdline
 
 But it necessary to add this segment `uio_pdrv_genirq.of_id=generic-uio` to enable the UIO drivers used by FRED. 
 
-Disable
+To perform this change, run `petalinux-config` and:
+- Disable the option located in 
+```
 DTG Settings --> Kernel bootargs --> generate bootargs automatically
-
-Enter manually the following bootargs
-
+```
+- Enter manually the following bootargs:
 ```
 earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait uio_pdrv_genirq.of_id=generic-uio
 ```
@@ -159,7 +142,7 @@ earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait
 When running in the board, double check the bootargs running:
 
 ```
-# cat /proc/cmdline
+$ cat /proc/cmdline
  earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait uio_pdrv_genirq.of_id=generic-uio
 ```
 
@@ -195,17 +178,7 @@ Back in the terminal, run:
   "
 ```
 
-and we should see the new layer inserted.
-
-Finally, we build the image again, this time including meta-fred recipes:
-
-```bash
-$ petalinux-build
-```
-
-This time the build process will take only a couple of minutes.
-
-These are some useful commands to show the new recipes:
+and we should see the new layer inserted. These are some useful commands to show the new recipes:
 
 ```bash
 $ source ./components/yocto/layers/core/oe-init-build-env
@@ -264,10 +237,11 @@ kernel-module-zynqmp-fpga-fmod-5.4.0-xilinx-v2020.2 zynqmp_generic 1.0
 
 ## Installed files
 
-This layer will install the following file into the Linux image:
+This layer will install the following files into the Linux image:
 
 ```
 /usr/bin/fred-server
+/usr/bin/update_hw
 /lib/modules/${KERNEL_VERSION}/kernel/drivers/fred/fred-buffctl.ko
 /lib/modules/${KERNEL_VERSION}/kernel/drivers/fred/zynqmp-fpga-fmod.ko
 /usr/bin/fred-test-cli
@@ -276,8 +250,6 @@ This layer will install the following file into the Linux image:
 where `KERNEL_VERSION=5.4.0-xilinx-v2020.2`.
 
 The `rootfs` is mounted in `build/tmp/work/zynqmp_generic-xilinx-linux/<image-name>/1.0-r0/rootfs`.
-
-
 
 ## Compiling the Device Tree for the Reconfigurable Regions - design time approach
 
@@ -393,11 +365,26 @@ xlnx,zynqmp-pcap-fpga-fmod
 
 Note that the PCAP driver can only be configured prior the system execution. Thus, it's not possible to use the overlay approach to load it since it is loaded during boot and it cannot be replaced in runtime.
 
-## Running FRED manually
+The PCAP driver is used by [FPGA manager](https://www.kernel.org/doc/html/latest/driver-api/fpga/fpga-mgr.html) driver. To check if it was correctly loaded, execute:
 
-Both FRED kernel modules are located in the `/lib/modules/<kernel-version>/kernel/drivers/fred/` directory in the generated image. These modules are automatically loaded by default during boot. To change this, comment out the lines with the `KERNEL_MODULE_AUTOLOAD` option in [`./conf/layer.conf`](./conf/layer.conf).
+```
+$ ls /sys/class/fpga_manager/fpga0
+device              flags               name                phy_bit_addr        phy_bit_rcfg_start  power               status              uevent
+firmware            key                 of_node             phy_bit_rcfg_done   phy_bit_size        state               subsystem
+```
 
-## FRED startup Script
+## Running FRED automatically
+
+Both FRED kernel modules are located in the `/lib/modules/<kernel-version>/kernel/drivers/fred/` directory in the generated image. These modules are automatically loaded by default during boot. To change this, comment out the lines with the `KERNEL_MODULE_AUTOLOAD` option in [`./conf/layer.conf`](./conf/layer.conf). Run the following command to confirm that the modules were loaded:
+
+```
+$ lsmod
+    Tainted: G  
+fred_buffctl 16384 0 - Live 0xffff800008c55000 (O)
+zynqmp_fpga_fmod 16384 1 - Live 0xffff800008c50000 (O)
+```
+
+**TODO**
 
 The recipe `recipes-kernel\bootscript` starts up FRED right after boot using `init.d`. Like in the previous section, this is already integrated into the image when running the standard build for this `meta-fred` layer. However, if the script is modified, the following commands must be executed for the image update"
 
@@ -450,22 +437,23 @@ Then, execute:
 
 ```
 $ dnf update
-$ dnf install fred-server
+$ dnf install -y fred-server
 ```
+
+Alternatively, you can download the rpm file with scp and install it with `dnf install -y <package-name>.rpm`.
 
 ### Board and package repository not on the same network
 
+If the board is not connected to the same network of the package repository, then you probably need to setup a ssh tunnel to forward the requests. Go to the host computer, i.e. the one with access to boath the board and to the package repository and run:
 
-3123  ssh -N ubuntu@localhost -L 8000: 10.30.3.59:8000
- 3124  ssh -N ubuntu@localhost -L 8001: 10.30.3.59:8000
- 3135  ping 10.30.3.59:8000
- 3137  ping https://10.30.3.59:8000
- 3138  ping http://10.30.3.59:8000
- 3139  traceroute6 https://10.30.3.59:8000
- 3140  iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 10.30.3.59:8000
- 3141  sudo iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination 10.30.3.59:8000
+```
+$ ssh -N <username>@localhost -L 8000: <repository-server-ip>:8000
+$ sudo iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination <repository-server-ip>:8000
+```
 
 ## Checking on the Board
+
+This section shows a list of commands usefull to check the OS environment for FRED.
 
 ### Check the bootloader configuration
 
@@ -500,7 +488,6 @@ slot_p0_s0
 pr_decoupler_p0_s0
 ```
 
-
 ## Updating the Hardware Desgin
 
 This image includes two ways to easy the hardware update process, generated by DART. In both cases, we assume that a DART design has been generated and, then, we generate a tar.gz file:
@@ -525,6 +512,16 @@ main
 └── ...
 ```
 
+## Auxiliar Files
+
+### `./scripts/pt-config`
+
+This file is the `petalinux-config` file with all options mentioned in this manual. Thus, it is possible to apply all configurations via CLI by executing:
+
+```
+$ cp script/pt-conifg project-spec/configs/config
+```
+
 ## References
 
  - [Zynq PL Programming With FPGA Manager](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841645/Solution+Zynq+PL+Programming+With+FPGA+Manager);
@@ -547,7 +544,7 @@ main
 
 ## Authors
 
- - Alexandre Amory (April 2021), ReTiS Lab, Scuola Sant'Anna, Pisa, Italy.
+ - Alexandre Amory (January 2022), ReTiS Lab, Scuola Sant'Anna, Pisa, Italy.
 
 ## Funding
  

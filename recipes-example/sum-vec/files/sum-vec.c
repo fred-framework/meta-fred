@@ -25,7 +25,7 @@ void print_vect(data_t *base, unsigned int size)
 {
 	printf("[ ");
 	for (unsigned int i = 0; i < size; ++i) {
-			printf("%llu ", base[i]);
+			printf("%lu ", base[i]);
 	}
 	printf("] \n");
 }
