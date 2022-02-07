@@ -8,6 +8,9 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=ec22d6b9f6457f4614215eafdd5448f4"
 # required for modules
 inherit module
 
+# Dependencies
+DEPENDS = "virtual/kernel"
+
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
@@ -34,3 +37,6 @@ do_install() {
     install -d $MODULE_DIR
     install -m 755 ${S}/fpga_mgr_zynqmp_drv/zynqmp-fpga-fmod.ko $MODULE_DIR
 }
+
+# Autoinstall (optionally disable)
+KERNEL_MODULE_AUTOLOAD += "zynqmp-fpga-fmod"
