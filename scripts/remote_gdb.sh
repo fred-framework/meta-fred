@@ -11,7 +11,7 @@
 # defines
 TARGET_IP=$1
 PACKAGE_NAME=$2
-TARGET_DIR?=/usr/bin/
+TARGET_DIR=/usr/bin/
 # build the target
 #petalinux-build -c $PACKAGE_NAME
 # update the package manager w the new package version
@@ -21,7 +21,7 @@ TARGET_DIR?=/usr/bin/
 #  - update the package manager internal cache 
 #  - replace the old package on target
 #  - start gdb on target
-ssh root@$TARGETIP "sh -c '/usr/bin/killall -q gdbserver; dnf update; dnf reinstall -y $PACKAGE_NAME; cd ${TARGET_DIR}; gdbserver localhost:3000 ${PROGRAM} > /dev/null 2>&1 &'" 
+ssh root@$TARGET_IP "sh -c '/usr/bin/killall -q gdbserver; dnf update; dnf reinstall -y $PACKAGE_NAME; cd ${TARGET_DIR}; gdbserver localhost:3000 ${PACKAGE_NAME} > /dev/null 2>&1 &'" 
 # update the package manager internal cache 
 #ssh root@$TARGETIP dnf update
 # replace the old package on target
