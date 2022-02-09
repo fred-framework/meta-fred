@@ -450,6 +450,8 @@ $ dnf install -y fred-server fred-server-dbg
 
 An alternative to the package repository is to download the rpm file with scp and install it with `dnf install -y <package-name>.rpm`.
 
+Other even more sofisticated development environment are possible. For instance, it is possible to use [VSCode for remote debugging](https://variwiki.com/index.php?title=Yocto_Programming_with_VSCode).
+
 ### Board and package repository not on the same network
 
 If the board is not connected to the same network of the package repository, then you probably need to setup a ssh tunnel to forward the requests. Go to the host computer, i.e. the one with access to boath the board and to the package repository and run:
@@ -540,12 +542,15 @@ $ petalinux-config --defconfig components/ext_source/meta-fred/scripts/pt-config
  - [ZynqMP PL Programming](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841847/Solution+ZynqMP+PL+Programming);
  - [U-Boot Flattened Device Tree](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841676/U-Boot+Flattened+Device+Tree);
  - [GPIO and Petalinux](https://www.linkedin.com/pulse/gpio-petalinux-part-2-roy-messinger/): about using UIO driver for a GPIO;
+ - [Yocto: Debugging With the GNU Project Debugger (GDB) Remotely](https://docs.yoctoproject.org/singleindex.html#debugging-with-the-gnu-project-debugger-gdb-remotely)
 
 ## TO DO
 
  - [ ] build the correct kernel module based on the FPGA model , e.g. `zynq` or `zynqmp`;
  - [ ] automatically load FRED kernel modules;
+ - [ ] follow the [recipe style guidelines](https://www.openembedded.org/wiki/Styleguide)
  - [ ] include the device tree from DART;
+ - [ ] instructions for remote debug, preferably with VSCode;
  - [ ] make a [cmake module](https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Find-Libraries) for `fred-lib`;
  - [ ] Use [SystemC cosim](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/862421112/Co-simulation) for testing FRED;
  - [ ] write a [QEMU device model](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/861569267/QEMU+Device+Model+Development) for testing FRED;

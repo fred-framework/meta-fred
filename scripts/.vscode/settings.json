@@ -1,0 +1,26 @@
+{
+	"VARISCITE": {
+		/* Target Device Settings - NEED TO BE FIXED */
+		"TARGET_IP":"10.30.3.185",
+
+		/* Project Settings - NEED TO BE FIXED */
+		"PROGRAM":"fred-server",
+
+		/* Yocto SDK Configuration - NEED TO BE FIXED */
+		"OECORE_NATIVE_SYSROOT":"/ssd/test/petalinux/2020.2/sysroots/x86_64-petalinux-linux",
+		"SDKTARGETSYSROOT": "/ssd/test/petalinux/2020.2/sysroots/aarch64-xilinx-linux",
+
+		/* Yocto SDK Configuration - DOES NOT NEED EDITS */
+        "ARCH":"aarch64-xilinx-linux",
+
+		/* Yocto SDK Constants */
+		"CC_PREFIX": "${config:VARISCITE.OECORE_NATIVE_SYSROOT}/usr/bin/${config:VARISCITE.ARCH}/${config:VARISCITE.ARCH}-",
+		/*
+        "CXX": "${config:VARISCITE.CC_PREFIX}g++ --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}",
+		"CC": "${config:VARISCITE.CC_PREFIX}gcc --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}",
+        */
+        "CC": "${config:VARISCITE.CC_PREFIX}gcc  -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}",
+        "CXX": "${config:VARISCITE.CC_PREFIX}g++  -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}"
+        
+	}
+}
