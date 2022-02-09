@@ -32,8 +32,8 @@ copy_dart_design () {
 set_env_vars(){
     mkdir -p ${IMAGE_ROOTFS}/etc/profile.d 
     #echo "export BOARD=${MACHINE}" > ${IMAGE_ROOTFS}/etc/profile.d/set_board_env
-    echo "alias ll=ls -lah" > ${IMAGE_ROOTFS}/etc/profile.d/set_alias
-    echo "alias h=history | grep $1" >> ${IMAGE_ROOTFS}/etc/profile.d/set_alias
+    echo "alias ll='ls -lah'" > ${IMAGE_ROOTFS}/etc/profile.d/set_alias
+    echo "alias h='history | grep \$1'" >> ${IMAGE_ROOTFS}/etc/profile.d/set_alias
 }
 
 # executes the procedure recommended in
