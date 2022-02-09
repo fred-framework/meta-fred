@@ -101,8 +101,8 @@ Luckly, all kernel parameters mentioned in this section are alredy enabled by de
 - `CONFIG_OVERLAY_FS`: Enables the use of devivetree overlay;
 - `CONFIG_FPGA`: enables the FPGA manager;
 - `CONFIG_UIO`: [Userspace I/O drivers](https://www.kernel.org/doc/html/v4.11/driver-api/uio-howto.html);
-- `CONFIG_UIO_PCI_GENERIC`: Generic driver for PCI 2.3 and PCI Express cards;
 - `CONFIG_UIO_PDRV_GENIRQ`: Userspace I/O plataform driver with generic IRW handling;
+- `CONFIG_CMA`: [Contiguous Memory Allocator](https://developer.toradex.com/knowledge-base/contiguous-memory-allocator-cma-linux). [A deep dive into CMA](https://lwn.net/Articles/486301/);
 - `DEVTMPFS`: Maintain a devtmpfs filesystem to mount at /dev;
 - `DEVTMPFS_MOUNT`: Automount devtmpfs at /dev;
 
@@ -440,7 +440,15 @@ $ dnf update
 $ dnf install -y fred-server
 ```
 
-Alternatively, you can download the rpm file with scp and install it with `dnf install -y <package-name>.rpm`.
+`dnf update` is only executed to update the board internal cache. So you only need to run it when the package repository changes. If you want to install the debug version of a package, then you need to run:
+
+```
+$ dnf install -y fred-server fred-server-dbg
+```
+
+`fred-server-dbg` installs the additional debug symbols. Thus, it is not a complete executable. That's the reason you need to install both packages. In the case of libraries, like `fred-lib` you might want to install its headers, enabling compilation inside the board. In this case you would also install the package `fred-lib-dev`.
+
+An alternative to the package repository is to download the rpm file with scp and install it with `dnf install -y <package-name>.rpm`.
 
 ### Board and package repository not on the same network
 
@@ -519,7 +527,11 @@ main
 This file is the `petalinux-config` file with all options mentioned in this manual. Thus, it is possible to apply all configurations via CLI by executing:
 
 ```
-$ cp script/pt-conifg project-spec/configs/config
+$ cp components/ext_source/meta-fred/scripts/pt-config ./project-spec/configs/config
+```
+or 
+```
+$ petalinux-config --defconfig components/ext_source/meta-fred/scripts/pt-config
 ```
 
 ## References
