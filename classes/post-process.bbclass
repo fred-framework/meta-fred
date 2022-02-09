@@ -36,9 +36,6 @@ set_env_vars(){
     echo "alias h=history | grep $1" >> ${IMAGE_ROOTFS}/etc/profile.d/set_alias
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "set_board_env;"
-
-
 # executes the procedure recommended in
 # https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18841676/U-Boot+Flattened+Device+Tree
 # to patch the devicetree
