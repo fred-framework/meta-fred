@@ -5,14 +5,18 @@
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
+            /* this is the program we want to debug*/
             "program": "${config:VARISCITE.ABS_PROGRAM_PATH}",
+            /* the programs arguments*/
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            /* this points to the `task` name which is executed before starting to debug*/
             "preLaunchTask": "launch-remote-debug",
+            /* these are gdb initial setup commands. You might need to change this in more complex scenarios */
             "setupCommands":
             [
                 {
@@ -25,11 +29,13 @@
                 /* this is required to find the source code*/
                 {   "text": "set directories \\$cdir:\\$cwd:${config:VARISCITE.TARGET_SYSROOT}"},
                 /* Stop at the `main` function */
-                {   "text": "break main",}
+                {   "text": "break main"}
             ],
             "targetArchitecture": "arm64",
+            /* This points to the host dgb client for cross denugging. Typically this can be found in the Yocto SDK directory.*/
             "miDebuggerPath": "${config:VARISCITE.GDB_PATH}",
-            "miDebuggerServerAddress": "${config:VARISCITE.TARGET_IP}:3000",
+            /* This refers to the board IP:port */
+            "miDebuggerServerAddress": "${config:VARISCITE.TARGET_IP}:3000"
         }
     ]
 }

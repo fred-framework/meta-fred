@@ -1,3 +1,21 @@
 main sources to setup these json files
 https://medium.com/@spe_/debugging-c-c-programs-remotely-using-visual-studio-code-and-gdbserver-559d3434fb78
 https://medium.com/@karel.l.vermeiren/cross-architecture-remote-debugging-using-gdb-with-visual-studio-code-vscode-on-linux-c0572794b4ef
+
+This setup works like this:
+
+1) The `settings.json` file is, in theory, the only file you need to change according to your setup. Read its comments to know how to edit them.
+2) The main file from the user perspective is `launch.json` since this file creates the rule `C++ Launch` called when the user wants to start debugging. This action fire other actions in this sequece:
+  2.1) It sets the program to be debuged (see `program`);
+  2.2) set the dependent tasks (see `preLaunchTask`)
+  2.3) Set the initial GDB setup commands;
+  2.4) Set the path to the cross debugger
+  2.5) Set the IP to reach the board
+3) `launch-remote-debug` task has several steps:
+   3.1) Build the debug app in the host using petalinux (see `build` task)
+   3.2) Update the Yocto package manager so that the board can reach the new version of the debugged package (see `"pkg-reindex` task);
+   3.3) In the board, update the package to be debugged and run gdbserver.
+4) Finally, VSCode return to the `launch.json` and attach the cross GDB in the host computer to the gdbserver running in the board.
+
+Have Fun!
+Alexandre Amory
