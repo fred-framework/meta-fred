@@ -443,10 +443,10 @@ $ dnf install -y fred-server
 `dnf update` is only executed to update the board internal cache. So you only need to run it when the package repository changes. If you want to install the debug version of a package, then you need to run:
 
 ```
-$ dnf install -y fred-server fred-server-dbg
+$ dnf install -y fred-server fred-server-dbg fred-server-src
 ```
 
-`fred-server-dbg` installs the additional debug symbols. Thus, it is not a complete executable. That's the reason you need to install both packages. In the case of libraries, like `fred-lib` you might want to install its headers, enabling compilation inside the board. In this case you would also install the package `fred-lib-dev`.
+`fred-server-dbg` and `fred-server-src` installs the additional debug symbols and the source code for debugging. In the case of libraries, like `fred-lib` you might want to install its headers, enabling compilation inside the board. In this case you would also install the package `fred-lib-dev`.
 
 An alternative to the package repository is to download the rpm file with scp and install it with `dnf install -y <package-name>.rpm`.
 
