@@ -450,8 +450,6 @@ $ dnf install -y fred-server fred-server-dbg
 
 An alternative to the package repository is to download the rpm file with scp and install it with `dnf install -y <package-name>.rpm`.
 
-Other even more sofisticated development environment are possible. For instance, it is possible to use [VSCode for remote debugging](https://variwiki.com/index.php?title=Yocto_Programming_with_VSCode).
-
 ### Board and package repository not on the same network
 
 If the board is not connected to the same network of the package repository, then you probably need to setup a ssh tunnel to forward the requests. Go to the host computer, i.e. the one with access to boath the board and to the package repository and run:
@@ -460,6 +458,25 @@ If the board is not connected to the same network of the package repository, the
 $ ssh -N <username>@localhost -L 8000: <repository-server-ip>:8000
 $ sudo iptables -t nat -A PREROUTING -p tcp --dport 8000 -j DNAT --to-destination <repository-server-ip>:8000
 ```
+
+## Petalinux SDK install
+
+**TO BE DONE !!!**
+
+## Remote debug with VSCode
+
+This section describes the use of [VSCode for remote debugging](https://variwiki.com/index.php?title=Yocto_Programming_with_VSCode). The following setup needs to be executed only once. These instructions are assuming that `dnf` package manager is working in the board.
+
+Run these commands in the host computer to setup a password-less access to the board:
+
+```
+$ sudo apt install gdb-multiarch
+$ ssh-keygen
+$ ssh-copy-id root@<board-ip>
+```
+
+Open VSCode in the meta-fred directory and execute `cp -r ./scripts/vscode_setup .vscode`. Next, edit the file `.vscode/settings.json` where it is marked with **NEED TO BE FIXED**. The value to these variables are found in the petalinux SDK script. 
+
 
 ## Checking on the Board
 
