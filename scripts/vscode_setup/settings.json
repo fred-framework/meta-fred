@@ -2,25 +2,28 @@
 	"VARISCITE": {
 		/* Target Device Settings - NEED TO BE FIXED */
 		"TARGET_IP":"10.30.3.185",
+		"TARGET_USER":"root",
 
 		/* Project Settings - NEED TO BE FIXED */
 		"PROGRAM":"fred-server",
+		"PROGRAM_PATH":"/usr/bin/",
 
 		/* Yocto SDK Configuration - NEED TO BE FIXED */
+		"ARCH":"aarch64-xilinx-linux",
 		"OECORE_NATIVE_SYSROOT":"/ssd/test/petalinux/2020.2/sysroots/x86_64-petalinux-linux",
-		"SDKTARGETSYSROOT": "/ssd/test/petalinux/2020.2/sysroots/aarch64-xilinx-linux",
+		/*"TARGET_SYSROOT": "/ssd/test/petalinux/2020.2/sysroots/${config:VARISCITE.ARCH}",*/
+		"TARGET_SYSROOT": "${workspaceRoot}/target_root/",
+		"PETALINUX_SETUP_SCRIPT": "/storage/Xilinx/PetaLinux/2020.2/tool/settings.sh",
 
 		/* Yocto SDK Configuration - DOES NOT NEED EDITS */
-        "ARCH":"aarch64-xilinx-linux",
+		"ABS_PROGRAM_PATH":"${config:VARISCITE.TARGET_SYSROOT}/${config:VARISCITE.PROGRAM_PATH}/${config:VARISCITE.PROGRAM}",
+		"GDB_PATH":"${config:VARISCITE.OECORE_NATIVE_SYSROOT}/usr/bin/${config:VARISCITE.ARCH}/${config:VARISCITE.ARCH}-gdb",
 
-		/* Yocto SDK Constants */
-		"CC_PREFIX": "${config:VARISCITE.OECORE_NATIVE_SYSROOT}/usr/bin/${config:VARISCITE.ARCH}/${config:VARISCITE.ARCH}-",
+		/* Yocto SDK Constants - only need this if you run directly cmake/make */
 		/*
-        "CXX": "${config:VARISCITE.CC_PREFIX}g++ --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}",
-		"CC": "${config:VARISCITE.CC_PREFIX}gcc --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}",
-        */
-        "CC": "${config:VARISCITE.CC_PREFIX}gcc  -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}",
-        "CXX": "${config:VARISCITE.CC_PREFIX}g++  -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 --sysroot=${config:VARISCITE.SDKTARGETSYSROOT}"
-        
+		"CC_PREFIX": "${config:VARISCITE.OECORE_NATIVE_SYSROOT}/usr/bin/${config:VARISCITE.ARCH}/${config:VARISCITE.ARCH}-",
+		"CC": "${config:VARISCITE.CC_PREFIX}gcc  -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 --sysroot=${config:VARISCITE.TARGET_SYSROOT}",
+		"CXX": "${config:VARISCITE.CC_PREFIX}g++  -march=armv8-a+crc -mtune=cortex-a72.cortex-a53 --sysroot=${config:VARISCITE.TARGET_SYSROOT}"
+		*/
 	}
 }

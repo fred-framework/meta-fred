@@ -21,7 +21,7 @@ TARGET_DIR=/usr/bin/
 #  - update the package manager internal cache 
 #  - replace the old package on target
 #  - start gdb on target
-ssh root@$TARGET_IP "sh -c '/usr/bin/killall -q gdbserver; dnf update; dnf reinstall -y $PACKAGE_NAME; cd ${TARGET_DIR}; gdbserver localhost:3000 ${PACKAGE_NAME} > /dev/null 2>&1 &'" 
+ssh root@$TARGET_IP "sh -c '/usr/bin/killall -q gdbserver; dnf update; dnf reinstall -y $PACKAGE_NAME $PACKAGE_NAME-dbg $PACKAGE_NAME-src; cd ${TARGET_DIR}; gdbserver localhost:3000 ${PACKAGE_NAME} > /dev/null 2>&1 &'" 
 # update the package manager internal cache 
 #ssh root@$TARGETIP dnf update
 # replace the old package on target

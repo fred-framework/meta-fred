@@ -1,14 +1,5 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
-    /* Configure Yocto SDK Constants from settings.json */
-    "options": {
-        "env": {
-            "CXX": "${config:VARISCITE.CXX}",
-            "CC": "${config:VARISCITE.CC}",
-        }
-     },
      /* Configure integrated VS Code Terminal */
      "presentation": {
         "echo": false,
@@ -18,28 +9,46 @@
         "showReuseMessage": true,
     },    
     "tasks": [
-        /* Configure remote debug task */
         {
-            "label": "remote-debug",
+            "label": "compile-launch-remote-debug",
             "isBackground": true,
             "type": "shell",
-            "command": "sh", 
+            "command": "sh",
             "args": [
-                "./scripts/remote_gdb.sh",  
+                "${workspaceRoot}/components/ext_source/meta-fred/scripts/remote_gdb.sh",
                 "${config:VARISCITE.TARGET_IP}",
                 "${config:VARISCITE.PROGRAM}"
             ],
-            "dependsOn": ["build"],                       
+            "dependsOn": [
+                "build",
+                "reindex"
+            ]
         },
-        /* Configure Build Task and update the package repository */
+        {
+            "label": "launch-remote-debug",
+            "isBackground": true,
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "${workspaceRoot}/components/ext_source/meta-fred/scripts/remote_gdb.sh",
+                "${config:VARISCITE.TARGET_IP}",
+                "${config:VARISCITE.PROGRAM}"
+            ]
+        },
         {
             "label": "build",
             "type": "shell",
             "command": [
-                "petalinux-build -c ${config:VARISCITE.PROGRAM}",
-                "petalinux-build -c package-index"
+                "source ${config:VARISCITE.PETALINUX_SETUP_SCRIPT}; petalinux-build -c ${config:VARISCITE.PROGRAM}"
             ],
-            /*"problemMatcher": ["$gcc"]*/
-        },        
+            "problemMatcher": []
+        },
+        {
+            "label": "pkg-reindex",
+            "type": "shell",
+            "command": [
+                "source ${config:VARISCITE.PETALINUX_SETUP_SCRIPT}; petalinux-build -c package-index"
+            ]
+        }
     ]
 }

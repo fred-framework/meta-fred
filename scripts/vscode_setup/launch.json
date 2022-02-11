@@ -1,24 +1,35 @@
 {
     "version": "0.2.0",
-    "configurations": [{
-        "name": "GDB debug",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${config:VARISCITE.PROGRAM}",
-        "args": [],
-        "stopAtEntry": true,
-        "cwd": "${workspaceFolder}",
-        "environment": [],
-        "console": "integratedTerminal",
-        "MIMode": "gdb",
-        "targetArchitecture": "arm64",
-        "preLaunchTask": "remote-debug",
-        "setupCommands": [{
-            "description": "Enable pretty-printing for gdb",
-            "text": "-enable-pretty-printing",
-            "ignoreFailures": true
-        }],
-        "miDebuggerPath": "/usr/bin/gdb-multiarch",
-        "miDebuggerServerAddress": "${config:VARISCITE.TARGET_IP}:3000",
-    }]
+    "configurations": [
+        {
+            "name": "C++ Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${config:VARISCITE.ABS_PROGRAM_PATH}",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "launch-remote-debug",
+            "setupCommands":
+            [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                /* this might be required in the future ... not sure*/
+                /*{   "text": "set sysroot ${config:VARISCITE.TARGET_SYSROOT}"},*/
+                /* this is required to find the source code*/
+                {   "text": "set directories \\$cdir:\\$cwd:${config:VARISCITE.TARGET_SYSROOT}"},
+                /* Stop at the `main` function */
+                {   "text": "break main",}
+            ],
+            "targetArchitecture": "arm64",
+            "miDebuggerPath": "${config:VARISCITE.GDB_PATH}",
+            "miDebuggerServerAddress": "${config:VARISCITE.TARGET_IP}:3000",
+        }
+    ]
 }
