@@ -49,6 +49,6 @@ patch_pcap_devicetree () {
         dtc -O dts -o system.dts -b 0 -@ system.dtb
         sed -i 's/zynqmp-pcap-fpga/zynqmp-pcap-fpga-fmod/g' system.dts
         dtc -O dtb -o system.dtb -b 0 -@ system.dts    
-        mkimage -f image.its image.ub
+        /usr/bin/mkimage -f image.its image.ub
     fi
 }
