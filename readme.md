@@ -30,6 +30,16 @@ In fact, 2020.1 is the oldest supported version of petalinux. The recipe `recipe
 FRED is tested in zynq and zynqmp devices, namely zcu102-zynqmp, pynq-z1, and Ultra96-zynqmp. 
 Petalinux/Yocto has a variable called `MACHINE` that specifies the target hardware. This variable is automatically set when we assign a XSA or BSP file to a petalinux project. One can check the list of Xilinx machines in the directory `./components/yocto/layers/meta-xilinx/meta-xilinx-bsp/conf/machine/` under a petalinux project. In the petalinux flow, `MACHINE` can be viewed in  *petalinux-config --> Yocto settings --> () MACHINE NAME.*
 
+### Software requirements in the host 
+
+The host computer requires this additional packages
+
+```
+$ sudo apt install u-boot-tools
+```
+
+`u-boot-tools` install mkimage, used to patch the device tree.
+
 ## Building a Standard petalinux Project
 
 ### Building for a Zynq device
@@ -144,6 +154,12 @@ When running in the board, double check the bootargs running:
 ```
 $ cat /proc/cmdline
  earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait uio_pdrv_genirq.of_id=generic-uio
+```
+
+In case Vitis AI DPU is included into the design, then the bootargs is:
+
+```
+earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait cma=512M uio_pdrv_genirq.of_id=generic-uio
 ```
 
 ## Adding meta-fred Layer to a petalinux Project
@@ -261,6 +277,12 @@ $ grep -r CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS --include="config" .
 ./pre-built/linux/images/config:CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS="-@"
 ```
 
+In `petalinux-config`, this  option can be found in:
+
+```
+DTG Settings --> Devicetree compiler flags
+```
+
 This step inserts the device-tree segment related to FRED reconfigurable regions (RR) into the Linux device-tree. If the device tree was not changed during these previous steps, the merge has already been done. Otherwise, execute the following commands in the petalinux project directory:
 
 ```bash
@@ -292,6 +314,18 @@ slot_p0_s0@A0000000
 ```
 
 ## Compiling the Device Tree for the Reconfigurable Regions - overlay approach
+
+The following options are required to enable devicetree overlay:
+
+- In `petalinux-config`, make sure that this option is enabled:
+```
+DTG Settings --> Devicetree overlay
+```
+- In the kernel, double check if these options are enabled:
+```
+`CONFIG_OF_OVERLAY`: Enables the use of devivetree overlay;
+`CONFIG_OVERLAY_FS`: Enables the use of devivetree overlay;
+```
 
 Using device tree overlay it is possible to patch the device tree in while running the system.
 
