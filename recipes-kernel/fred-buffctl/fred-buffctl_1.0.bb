@@ -14,7 +14,7 @@ DEPENDS = "virtual/kernel"
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
-SRCREV = "f6772396e943882fd3c54da75c5577710d9a25cb"
+SRCREV = "d88cdac0934b217d36a3adc12229bcce024968e7"
 SRC_URI = " \
     git://gitlab.retis.santannapisa.it/a.amory/fred-kmods.git;branch=fpga-mgr;protocol=https \
 "
