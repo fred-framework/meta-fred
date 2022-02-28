@@ -14,9 +14,9 @@ DEPENDS = "virtual/kernel"
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
-SRCREV = "d88cdac0934b217d36a3adc12229bcce024968e7"
+SRCREV = "f1a4a3f643a11d78fc14ef957a9369ab0859f5a5"
 SRC_URI = " \
-    git://gitlab.retis.santannapisa.it/a.amory/fred-kmods.git;branch=fpga-mgr;protocol=https \
+    git://github.com/fred-framework/fred-linux-fpga-mgr-fmod.git;branch=main;protocol=https \
 "
 S = "${WORKDIR}/git"
 
@@ -27,7 +27,6 @@ PV = "1.0+git${SRCPV}"
 RPROVIDES_${PN} += "zynqmp-fpga-fmod"  
 
 do_compile (){
-    cd ${S}/fpga_mgr_zynqmp_drv
     oe_runmake
 }
 

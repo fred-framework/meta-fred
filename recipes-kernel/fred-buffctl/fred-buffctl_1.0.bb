@@ -14,9 +14,9 @@ DEPENDS = "virtual/kernel"
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
-SRCREV = "d88cdac0934b217d36a3adc12229bcce024968e7"
+SRCREV = "5ab971fbb206e92f2559ea13cedc86f7fd917609"
 SRC_URI = " \
-    git://gitlab.retis.santannapisa.it/a.amory/fred-kmods.git;branch=fpga-mgr;protocol=https \
+    git://github.com/fred-framework/fred-linux-buffctl-kmod.git;branch=main;protocol=https \
 "
 S = "${WORKDIR}/git"
 
@@ -26,7 +26,6 @@ PV = "1.0+git${SRCPV}"
 RPROVIDES_${PN} += "fred-buffctl"  
 
 do_compile (){
-    cd ${S}/fred_buffctl
     oe_runmake
 }
 
