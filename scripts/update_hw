@@ -3,8 +3,8 @@
 # usage: update_hw <user> <ip> <path>
 
 usage(){
-    echo "usage #1: run \`update_hw <user> <ip> <path>\`\n"
-    echo "usage #2: set the environment variables FRED_USER, FRED_IP, FRED_PATH. Then run \`update_hw\`\n"
+    echo "usage #1: run \`update_hw <user> <ip> <path>\`"
+    echo "usage #2: set the environment variables FRED_USER, FRED_IP, FRED_PATH. Then run \`update_hw\`"
     exit 1
 }
 
@@ -26,22 +26,26 @@ else
   SCP_PATH="${FRED_PATH}"
 fi
 
+scp ${SCP_USERNAME}\@${SCP_IP}:${SCP_PATH}/fred.tar.gz /tmp
+RESULT=$?
+if [ $RESULT -gt 0 ]; then
+  echo "ERROR running scp"
+  usage
+fi
+# if this no errors during the download, then clean up the dir and extract the design
 mkdir -p /opt/fredsys/
 cd /opt/fredsys/
 rm -rf /opt/fredsys/*
-scp ${SCP_USERNAME}\@${SCP_IP}:${SCP_PATH}/fred.tar.gz .
-RESULT=$?
-if [ $RESULT -gt 0 ]; then
-  echo "ERROR running scp\n"
-  usage
-fi
-
+mv /tmp/fred.tar.gz .
 tar xzf fred.tar.gz .
 RESULT=$?
 if [ $RESULT -gt 0 ]; then
-  echo "ERROR running tar\n"
+  echo "ERROR running tar"
   usage
 fi
+
+dtc -O dtb -o static.dtbo -b 0 -@ static.dts
+echo "Devicetree compiled"
 
 echo "DART hw design was updated in /opt/fredsys/!"
 cd -

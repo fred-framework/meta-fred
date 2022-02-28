@@ -4,15 +4,15 @@
         #address-cells = <2>;
         #size-cells = <2>;
         slot_p0_s0@A0000000 { 
-            compatible = "generic-uio";
-            reg = <0xA0000000 0x10000>;
-            interrupt-parent = <&gic>;
-            interrupts = <0x0 0x1d 0x4>; 
+				compatible = "generic-uio";
+				reg = <0x0 0xA0000000 0x0 0x10000>;
+				interrupt-parent = <&gic>;
+				interrupts = <0 89 4>;
             }; 
 
         pr_decoupler_p0_s0@A0010000 { 
-            compatible = "generic-uio";
-            reg = <0xA0010000 0x10000>;
+				compatible = "generic-uio";
+				reg = <0x0 0xA0010000 0x0 0x10000>;            
             }; 
     };
 };
