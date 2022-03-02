@@ -549,9 +549,11 @@ $ tar czf  ../fred.tar.gz .
 
 The first approach is to place the `fred.tar.gz` in the base petalinux directory before executing `petalinux-build`. The function [`copy_dart_design`](./scripts/update_hw) will copy the hardware design to the Linux image, in the directoty `/opt/fredsys/`. This approach is more usefull whrn the design is stable, and unlike to change.
 
-The second approach is when the user is already running in the board. There is a script `/usr/bin/update_hw` that copies `fred.tar.gz` from the host computer to the board and extracts it into `/opt/fredsys/`. This approach is more appropriate when the design in being tested and debuged.
+The second approach is when the user is already running in the board. There is a script [`/usr/bin/update_hw`](./scripts/update_hw) that copies `fred.tar.gz` from the host computer to the board and extracts it into `/opt/fredsys/`. This approach is more appropriate when the design in being tested and debuged.
 
 Finally, while running in the board, the new static bitstream can be loaded into the PL with the script [`/usr/bin/load_hw`](./scripts/load_hw).
+
+Checkout in this example how to compile a [simple FRED application](./recipes-example/sum-vec/readme.md) and run a newly loaded hardware design.
 
 ## Checking on the Board
 

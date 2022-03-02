@@ -5,7 +5,7 @@ A very simple FRED application that sums two vectors, i.e `C_out = A_in + B_in`.
 From the hardware perpective, this application uses the hw IP [`sum_vec`](https://github.com/fred-framework/dart_ips/tree/master/ips/sum_vec) to perform the FPGA offloading. The IP is supposed to have `hw ID = 100`. The devicetree file [`files/example-frag.dts`](./recipes-example/sum-vec/files/example-frag.dts) is a minimal example considering a Linux image built with the recommended [`retis-meta`](https://github.com/fred-framework/meta-retis) Yocto Layer.
 
 This application can be compiled either with Yocto or in the board, if these requirements are installed into the board:
- - compilers;
+ - build-essential;
  - cmake;
  - fred-lib-dev;
 
@@ -21,12 +21,13 @@ $ make
 $ cp example-frag.dts /opt/fredsys/static.dts
 $ dtc -O dtb -o /opt/fredsys/static.dtbo -b 0 -@ /opt/fredsys/static.dts
 $ load_hw
+$ fred-server &
+```
+
+In another terminal run: 
+
+```
 $ ./sum-vec
-```
-
-It sums a vector with zeros with a vector with ones. Thus, the expected output is a vector with ones with a print similar to this, including the word *Match*:
-
-```
 sum-vec 
  starting vector sum 
 fred_lib: connected to fred server!
@@ -42,3 +43,5 @@ Content of C[0:9]:
 [ 1 1 1 1 1 1 1 1 1 1 ] 
 Fred finished
 ```
+
+It sums a vector with zeros with a vector with ones. Thus, the expected output is a vector with ones with a print similar to this, including the word *Match*.
