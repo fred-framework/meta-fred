@@ -85,6 +85,8 @@ This is the procedure for Zynq Ultra Scale+, in this case the zcu102 board:
 
 The ZCU102 PetaLinux BSP file can be downloaded from [here](https://www.xilinx.com/member/forms/download/design-license-zcu102-base.html?filename=xilinx_zcu102_base_202010_1.zip).
 
+### Configuring Petalinux 
+
 Let's run the `petalinux-config` to configure some minimal parameters:
 ```bash
  $ petalinux-config
@@ -96,13 +98,15 @@ Subsystem AUTO Hardware Settings  ---> Ethernet Settings ---> Randomise MAC addr
 Image Packaging Configuration  ---> Root filesystem type (INITRD)  ---> EXT4 (SD/eMMC/SATA/USB) 
 ```
 
-Save the configuration and press ESC until quit the application. Finally, build the image with the following command:
+Save the configuration and press ESC until quit the application. 
 
-```bash
- $ petalinux-build
+When petalinux-config exits, it creates the *build directory*. It is recommemded to reuse **Yocto downloads and sstates directories** from previous petalinux projects. If these two directories do not exist, no problem. It will only take longer to download all necessary code. For reuse the directories, it is enough to execute the follwoing commands:
+
 ```
-
-This last command takes a long time. Go take a coffee !
+$ cd build
+$ ln -s <yocto-download-dir> downloads
+$ ln -s <yocto-sstate-cache> sstate-cache
+```
 
 ## Kernel requirements
 
@@ -407,6 +411,17 @@ $ ls /sys/class/fpga_manager/fpga0
 device              flags               name                phy_bit_addr        phy_bit_rcfg_start  power               status              uevent
 firmware            key                 of_node             phy_bit_rcfg_done   phy_bit_size        state               subsystem
 ```
+
+## Building the Linux Image
+
+Finally, build the image with the following command:
+
+```bash
+ $ petalinux-build
+```
+
+This last command takes a long time. Go take a coffee !
+
 
 ## Running FRED automatically
 
