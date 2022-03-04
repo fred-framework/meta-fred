@@ -300,5 +300,6 @@ CONFIG_YOCTO_NETWORK_SSTATE_FEEDS_URL="http://petalinux.xilinx.com/sswreleases/r
 #
 # User Layers
 #
-CONFIG_USER_LAYER_0="${PROOT}/components/ext_source/meta-fred"
-CONFIG_USER_LAYER_1=""
+CONFIG_USER_LAYER_0="${PROOT}/components/ext_source/meta-retis"
+CONFIG_USER_LAYER_1="${PROOT}/components/ext_source/meta-fred"
+CONFIG_USER_LAYER_2=""
