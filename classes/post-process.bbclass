@@ -14,6 +14,7 @@ copy_scripts () {
     META_FRED_DIR="${TOPDIR}/../components/ext_source/meta-fred/"
     if [ -e "${IMAGE_ROOTFS}" ]; then
         cp ${META_FRED_DIR}/scripts/update_hw ${IMAGE_ROOTFS}/usr/bin/update_hw
+        cp ${META_FRED_DIR}/scripts/load_hw ${IMAGE_ROOTFS}/usr/bin/load_hw
     fi
 }
 

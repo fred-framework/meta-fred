@@ -5,6 +5,7 @@
 CONFIG_fred-lib
 CONFIG_fred-tutorial
 CONFIG_fred-server
+CONFIG_sum-vec
 
 # FRED kernel modules
 #MACHINE_EXTRA_RDEPENDS += "fred-buffctl"
