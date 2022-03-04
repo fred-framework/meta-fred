@@ -33,7 +33,7 @@ do_compile (){
 do_install() {
     MODULE_DIR=${D}${nonarch_base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/fred 
     install -d $MODULE_DIR
-    install -m 755 ${S}/fpga_mgr_zynqmp_drv/zynqmp-fpga-fmod.ko $MODULE_DIR
+    install -m 755 ${S}/zynqmp-fpga-fmod.ko $MODULE_DIR
 }
 
 # Autoinstall (optionally disable)
