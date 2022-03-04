@@ -13,7 +13,7 @@ DEPENDS = "virtual/kernel"
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
-SRCREV = "f1a4a3f643a11d78fc14ef957a9369ab0859f5a5"
+SRCREV = "a4ede62c184f090af65422ef6848490f73d39142"
 SRC_URI = " \
     git://github.com/fred-framework/fred-linux-fpga-mgr-fmod.git;branch=main;protocol=https \
 "

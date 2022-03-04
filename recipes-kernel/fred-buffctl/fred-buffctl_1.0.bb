@@ -13,7 +13,7 @@ DEPENDS = "virtual/kernel"
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
-SRCREV = "5ab971fbb206e92f2559ea13cedc86f7fd917609"
+SRCREV = "33ecadce5dc3b7c1f787d477d69faf207961e1f0"
 SRC_URI = " \
     git://github.com/fred-framework/fred-linux-buffctl-kmod.git;branch=main;protocol=https \
 "
