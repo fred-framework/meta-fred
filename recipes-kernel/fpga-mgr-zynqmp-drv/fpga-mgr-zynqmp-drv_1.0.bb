@@ -2,8 +2,7 @@ SUMMARY = "FPGA Manager kernel module modified for FRED"
 HOMEPAGE = "http://fred.santannapisa.it/"
 SECTION = "fred"
 LICENSE = "GPLv3"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=ec22d6b9f6457f4614215eafdd5448f4"
-#TODO: currently gitlab.retis.santannapisa.it/a.amory/fred-kmods is assuming that all modules are under the same license, which might not be the case. review it and add a lic for each module.
+LIC_FILES_CHKSUM = "file://LICENSE;md5=a0757037bd42236869dca3a257eeabb6"
 
 # required for modules
 inherit module

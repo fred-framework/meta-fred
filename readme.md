@@ -551,7 +551,7 @@ The first approach is to place the `fred.tar.gz` in the base petalinux directory
 
 The second approach is when the user is already running in the board. There is a script [`/usr/bin/update_hw`](./scripts/update_hw) that copies `fred.tar.gz` from the host computer to the board and extracts it into `/opt/fredsys/`. This approach is more appropriate when the design in being tested and debuged.
 
-Finally, while running in the board, the new static bitstream can be loaded into the PL with the script [`/usr/bin/load_hw`](./scripts/load_hw).
+Finally, while running in the board, the new static bitstream can be loaded into the PL with the script [`/usr/bin/load_hw`](./scripts/load_hw). Note that `dmesg` shows the devicetree messages. Always check these messages because they are a common source of mismatches in the hardware/software interface. Still in `dmesg` messages, note that the `fpga_manager` device driver is the modified one. See the message *Xilinx ZynqMP FPGA Manager Fmod*.
 
 Checkout in this example how to compile a [simple FRED application](./recipes-example/sum-vec/readme.md) and run a newly loaded hardware design.
 
