@@ -414,14 +414,30 @@ firmware            key                 of_node             phy_bit_rcfg_done   
 
 ## Building the Linux Image
 
-Finally, build the image with the following command:
+In the `<PetaLinux-project>` directory, build the Linux images using the following command:
 
-```bash
- $ petalinux-build
+```
+$ petalinux-build -c <image-name>
 ```
 
-This last command takes a long time. Go take a coffee !
+This last command takes a long time when it is first executed,specially if the Yocto downloads and sstate directories were not reused. After the build process is finished, verify the images in the directory `images/linux`. 
 
+Go to the image directory and generate the boot image `BOOT.BIN` using the following command:
+
+```
+$ cd images/linux
+$ petalinux-package --boot --fsbl zynqmp_fsbl.elf --u-boot
+```
+
+Or executing :
+
+```
+$ cd images/linux
+$ petalinux-package --boot --force --fsbl zynqmp_fsbl.elf --fpga system.bit --pmufw pmufw.elf --atf bl31.elf --u-boot u-boot.elf
+```
+If the vivado design uses the **PL** part. Note that this last option includes the .bit into the `BOOT.BIN`. 
+
+The list of installed packages can be found in the `images/linux/rootfs.manifest` file.
 
 ## Running FRED automatically
 
