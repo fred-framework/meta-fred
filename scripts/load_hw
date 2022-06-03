@@ -1,5 +1,9 @@
 #!/bin/sh
 
+cd /opt/fredsys
+dtc -O dtb -o static.dtbo -b 0 -@ static.dts
+echo "Devicetree compiled"
+
 # Reconfigure the static design and apply its device tree overaly
 mkdir -p /lib/firmware
 cp /opt/fredsys/dart_fred/bits/static.bin /lib/firmware/

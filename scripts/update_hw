@@ -44,9 +44,6 @@ if [ $RESULT -gt 0 ]; then
   usage
 fi
 
-dtc -O dtb -o static.dtbo -b 0 -@ static.dts
-echo "Devicetree compiled"
-
 echo "DART hw design was updated in /opt/fredsys/!"
 cd -
 exit 0
