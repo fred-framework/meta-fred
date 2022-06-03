@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=1ebbd3e34237af26da5dc08a4e440464"
 # use this line if you want to get the latest commit of the branch
 #SRCREV = "${AUTOREV}"
 # or use this line to get a specific commit
-SRCREV = "1625e8d0b4b87a4b173d1a9cfef22c2fc2d8ae84"
+SRCREV = "42a9f1fa5a5ed6efb4b1407f1f5f6b3056ddcc5c"
 SRC_URI = "git://github.com/fred-framework/fred-linux.git/;branch=master"
 S = "${WORKDIR}/git"
 
