@@ -5,8 +5,12 @@ This is a Yocto layer to include [FRED](http://fred.santannapisa.it/) into to a 
 
 ## Migration Notes
 
-Petalinux 2022.1 uses Yocto 3.4 (Honister) that introduces breaking changes compared to previous Yocto versions. This branch is an **on going** attempt to make this Yocto layer compatible with the latest Petalinux/Yocto versions.
+Petalinux 2022.1 uses Yocto 3.4 (Honister) that introduces breaking changes compared to previous Yocto versions. This branch is an **on going** attempt to make this Yocto layer compatible with the latest Petalinux/Yocto versions. When trying to run the current version,
+this error occurs:
 
+```
+ERROR: Variable IMAGE_INSTALL_append contains an operation using the old override syntax. Please convert this layer/metadata before attempting to use with a newer bitbake.
+```
 
 ## Dependencies
 
