@@ -666,6 +666,11 @@ $ petalinux-config --defconfig components/ext_source/meta-fred/scripts/pt-config
  - [ ] make a [cmake module](https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Find-Libraries) for `fred-lib`;
  - [ ] use [SystemC cosim](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/862421112/Co-simulation) for testing FRED;
  - [ ] write a [QEMU device model](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/861569267/QEMU+Device+Model+Development) for testing FRED;
+ - [ ] Add an OpenCV + FRED example using these tutorial as a starting point
+    - https://opencvguide.readthedocs.io/en/latest/opencvcpp/basics.html#sobel-edge-detection
+    - https://opencvguide.readthedocs.io/en/latest/opencvpetalinux/basics.html
+    - and, of course, the Lena image
+    - https://raw.githubusercontent.com/opencv/opencv/4.x/samples/data/lena.jpg
 
 ## Contributions
 
