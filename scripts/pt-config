@@ -195,7 +195,7 @@ CONFIG_SUBSYSTEM_EXTRA_DT_FILES=""
 # Kernel Bootargs
 #
 # CONFIG_SUBSYSTEM_BOOTARGS_AUTO is not set
-CONFIG_SUBSYSTEM_USER_CMDLINE="earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait uio_pdrv_genirq.of_id=generic-uio"
+CONFIG_SUBSYSTEM_USER_CMDLINE="earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait uio_pdrv_genirq.of_id=generic-uio loglevel=1"
 CONFIG_SUBSYSTEM_DEVICETREE_COMPILER_FLAGS="-@"
 CONFIG_SUBSYSTEM_DTB_OVERLAY=y
 # CONFIG_SUBSYSTEM_REMOVE_PL_DTB is not set
