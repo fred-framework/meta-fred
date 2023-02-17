@@ -111,8 +111,7 @@ $ ln -s <yocto-sstate-cache> sstate-cache
 ## Kernel requirements
 
 Luckly, all kernel parameters mentioned in this section are alredy enabled by default. So no action is required to configure the kernel. But for documentation purposes, these is the list of parameters that must be enabled on the Linux kernel:
-- `CONFIG_OF_OVERLAY`: Enables the use of devivetree overlay;
-- `CONFIG_OVERLAY_FS`: Enables the use of devivetree overlay;
+- `CONFIG_OF_OVERLAY`, `CONFIG_OVERLAY_FS`, and `CONFIG_OF_CONFIGFS`, : Enables the use of devicetree overlay;
 - `CONFIG_FPGA`: enables the FPGA manager;
 - `CONFIG_UIO`: [Userspace I/O drivers](https://www.kernel.org/doc/html/v4.11/driver-api/uio-howto.html);
 - `CONFIG_UIO_PDRV_GENIRQ`: Userspace I/O plataform driver with generic IRW handling;
