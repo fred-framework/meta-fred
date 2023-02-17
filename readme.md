@@ -119,6 +119,7 @@ Luckly, all kernel parameters mentioned in this section are alredy enabled by de
 - `CONFIG_CMA`: [Contiguous Memory Allocator](https://developer.toradex.com/knowledge-base/contiguous-memory-allocator-cma-linux). [A deep dive into CMA](https://lwn.net/Articles/486301/);
 - `DEVTMPFS`: Maintain a devtmpfs filesystem to mount at /dev;
 - `DEVTMPFS_MOUNT`: Automount devtmpfs at /dev;
+- `IKCONFIG` and `IKCONFIG_PROC`: to create the file /proc/config.gz, usefull to debug the kernel cofiguration of a working Linux image.
 
 During design time, run to configure/check the parameters:
 
